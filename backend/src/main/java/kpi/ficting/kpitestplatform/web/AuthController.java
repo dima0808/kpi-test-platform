@@ -1,7 +1,7 @@
-package com.nikitin.kpitestplatform.web;
+package kpi.ficting.kpitestplatform.web;
 
-import com.nikitin.kpitestplatform.dto.LoginDto;
-import com.nikitin.kpitestplatform.service.AuthService;
+import kpi.ficting.kpitestplatform.dto.LoginDto;
+import kpi.ficting.kpitestplatform.service.AuthService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

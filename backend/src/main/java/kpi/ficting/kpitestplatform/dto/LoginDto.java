@@ -1,4 +1,4 @@
-package com.nikitin.kpitestplatform.dto;
+package kpi.ficting.kpitestplatform.dto;
 
 import lombok.Data;
 

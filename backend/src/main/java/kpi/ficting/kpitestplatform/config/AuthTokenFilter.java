@@ -1,6 +1,6 @@
-package com.nikitin.kpitestplatform.config;
+package kpi.ficting.kpitestplatform.config;
 
-import com.nikitin.kpitestplatform.util.JwtUtils;
+import kpi.ficting.kpitestplatform.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

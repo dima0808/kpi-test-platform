@@ -1,8 +1,8 @@
-package com.nikitin.kpitestplatform.service.impl;
+package kpi.ficting.kpitestplatform.service.impl;
 
-import com.nikitin.kpitestplatform.dto.LoginDto;
-import com.nikitin.kpitestplatform.service.AuthService;
-import com.nikitin.kpitestplatform.util.JwtUtils;
+import kpi.ficting.kpitestplatform.dto.LoginDto;
+import kpi.ficting.kpitestplatform.service.AuthService;
+import kpi.ficting.kpitestplatform.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.nikitin.kpitestplatform.config;
+package kpi.ficting.kpitestplatform.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;

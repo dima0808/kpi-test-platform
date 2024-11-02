@@ -1,4 +1,4 @@
-package com.nikitin.kpitestplatform;
+package kpi.ficting.kpitestplatform;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

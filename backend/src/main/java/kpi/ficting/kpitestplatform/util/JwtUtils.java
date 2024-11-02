@@ -1,4 +1,4 @@
-package com.nikitin.kpitestplatform.util;
+package kpi.ficting.kpitestplatform.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

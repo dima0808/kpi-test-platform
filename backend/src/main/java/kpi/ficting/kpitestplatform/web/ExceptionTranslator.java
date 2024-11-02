@@ -1,7 +1,7 @@
-package com.nikitin.kpitestplatform.web;
+package kpi.ficting.kpitestplatform.web;
 
-import com.nikitin.kpitestplatform.common.CustomErrorResponse;
-import com.nikitin.kpitestplatform.config.InvalidJwtException;
+import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
+import kpi.ficting.kpitestplatform.config.InvalidJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
