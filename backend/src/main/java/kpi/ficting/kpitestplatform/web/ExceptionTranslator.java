@@ -1,11 +1,17 @@
 package kpi.ficting.kpitestplatform.web;
 
+import static kpi.ficting.kpitestplatform.util.ValidationUtils.getErrorResponseOfFieldErrors;
+
 import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
 import kpi.ficting.kpitestplatform.config.InvalidJwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -37,5 +43,13 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         .path(request.getDescription(false).substring(4))
         .build();
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+      @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
+    log.info("Input params validation failed");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors(), request));
   }
 }
