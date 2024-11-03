@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Tests from '../assets/icons/tests.svg';
+import tests from '../assets/icons/tests.svg';
 import arrows from '../assets/icons/arrows.svg';
+import Cookies from "js-cookie";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -12,6 +13,7 @@ const Sidebar = () => {
   };
 
   const logout = () => {
+    Cookies.remove('token');
     navigate('/login');
   };
   return (
@@ -23,8 +25,8 @@ const Sidebar = () => {
         <div className="sidebar__menu">
           <div className="menu__item active">
             <div className="menu__item--first"></div>
-            <div className="menu__item--info">
-              <img src={Tests} alt="foto" />
+            <div onClick={() => navigate('/')} className="menu__item--info">
+              <img src={tests} alt="foto" />
               <p>Tests</p>
             </div>
           </div>

@@ -16,8 +16,9 @@ const SessionRow = ({ id, name, openDate, deadline, startedSessions }) => {
 
   const getStatus = (deadline) => {
     const currentDate = new Date();
-    const deadlineDate = parseDate(deadline);
-    return currentDate <= deadlineDate ? true : false;
+    const deadlineTime = parseDate(deadline);
+    const openDateTime = parseDate(openDate);
+    return currentDate <= deadlineTime && currentDate >= openDateTime;
   };
 
   const [status, setStatus] = useState(getStatus(deadline));
