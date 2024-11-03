@@ -1,0 +1,87 @@
+.dropdown {
+  position: relative;
+  height: 28px;
+  z-index: 2;
+
+  &__item {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding-left: 2px;
+    height: 28px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  &__menu {
+    position: absolute;
+    top: 85%;
+    padding: 8px 12px;
+    background-color: $white;
+    width: 100%;
+    border: 1px solid $black;
+    border-radius: 0 0 7px 7px;
+    z-index: 1;
+  }
+
+  &-toggle {
+    position: relative;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 126px;
+    height: 100%;
+    background-color: $blue-bg;
+    font-size: 19px;
+    font-weight: 500;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    z-index: 2;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    span {
+      color: $white;
+      padding-right: 10px;
+      border-right: 1px solid $white;
+    }
+
+    svg {
+      padding-left: 10px;
+    }
+
+    &--inactive {
+      background-color: $white;
+      color: $black;
+      border: 1px solid $black;
+
+      span {
+        color: $black;
+        border-right: 1px solid $black;
+      }
+
+      svg path {
+        transform: rotateX(180deg) translateY(-100%);
+        fill: $black;
+        padding-left: 10px;
+      }
+    }
+  }
+}
+
+.remove {
+  margin-top: 8px;
+  padding-block: 20px;
+  color: $red-light;
+  border-top: 2px solid $brd-clr;
+}
+
+.header-toggle {
+  height: 34px;
+  width: 133px;
+}
