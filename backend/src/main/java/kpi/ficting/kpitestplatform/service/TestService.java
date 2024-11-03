@@ -11,4 +11,8 @@ public interface TestService {
   Test findById(UUID testId);
 
   Test create(Test test);
+
+  Test update(UUID testId, Test test);
+
+  void deleteById(UUID testId);
 }

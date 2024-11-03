@@ -33,9 +33,9 @@ public class Test {
   private String description;
 
   private LocalDateTime openDate;
-
   private LocalDateTime deadline;
+  private Integer minutesToComplete;
 
-  @OneToMany(mappedBy = "test", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
   private List<Question> questions;
 }

@@ -93,7 +93,7 @@ public class SecurityConfig {
 
   @Bean
   public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-    String generatedPassword = UUID.randomUUID().toString();
+    String generatedPassword = UUID.randomUUID().toString().replace("-", "");
     System.out.println("Admin username: " + adminUsername);
     System.out.println("Generated admin password: " + generatedPassword);
 

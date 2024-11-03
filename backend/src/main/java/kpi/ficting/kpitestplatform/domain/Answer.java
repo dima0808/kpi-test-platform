@@ -1,44 +1,33 @@
 package kpi.ficting.kpitestplatform.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.List;
-import kpi.ficting.kpitestplatform.common.QuestionType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @Entity
-public class Question {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Answer { // todo: ask Valerii about inheritance. Different tables for different types of answers or not?
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String content;
-
-  private Integer points;
-
-  private QuestionType type;
-
-  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-  private List<Answer> answers;
-
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(nullable = false)
-  private Test test;
+  private Question question;
 }
