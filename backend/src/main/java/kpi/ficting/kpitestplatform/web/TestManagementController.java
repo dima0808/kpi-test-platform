@@ -32,31 +32,31 @@ public class TestManagementController {
 
   @GetMapping
   public ResponseEntity<TestListInfo> getAllTests() {
-    return ResponseEntity.ok(testMapper.toTestListInfo(testService.findAll()));
+    return ResponseEntity.ok(testMapper.toTestListInfo(testService.findAll(), true));
   }
 
   @GetMapping("{testId}")
   public ResponseEntity<TestInfo> getTestInfoById(@PathVariable UUID testId) {
-    return ResponseEntity.ok(testMapper.toTestInfo(testService.findById(testId)));
+    return ResponseEntity.ok(testMapper.toTestInfo(testService.findById(testId), true));
   }
 
   @GetMapping("{testId}/questions")
   public ResponseEntity<QuestionListDto> getQuestionsByTestId(@PathVariable UUID testId) {
     return ResponseEntity.ok(
-        testMapper.toQuestionDtoList(questionService.findByTestId(testId)));
+        testMapper.toQuestionDtoList(questionService.findByTestId(testId), true));
   }
 
   @PostMapping
   public ResponseEntity<TestInfo> createTest(@RequestBody @Valid TestDto testDto) {
     return ResponseEntity.status(HttpStatus.CREATED.value())
-        .body(testMapper.toTestInfo(testService.create(testMapper.toTest(testDto))));
+        .body(testMapper.toTestInfo(testService.create(testMapper.toTest(testDto)), true));
   }
 
   @PutMapping("{testId}")
   public ResponseEntity<TestInfo> updateTest(@PathVariable UUID testId,
       @RequestBody @Valid TestDto testDto) {
     return ResponseEntity.ok(
-        testMapper.toTestInfo(testService.update(testId, testMapper.toTest(testDto))));
+        testMapper.toTestInfo(testService.update(testId, testMapper.toTest(testDto)), true));
   }
 
   @DeleteMapping("{testId}")

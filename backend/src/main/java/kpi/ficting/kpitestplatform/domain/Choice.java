@@ -18,5 +18,4 @@ import lombok.experimental.SuperBuilder;
 public class Choice extends Answer {
 
   private String content;
-  private Boolean isCorrect;
 }

@@ -1,5 +1,10 @@
 package kpi.ficting.kpitestplatform.service.mapper;
 
+import static kpi.ficting.kpitestplatform.util.TestUtils.getFinishedSessions;
+import static kpi.ficting.kpitestplatform.util.TestUtils.getMaxScore;
+import static kpi.ficting.kpitestplatform.util.TestUtils.getStartedSessions;
+
+import java.util.ArrayList;
 import java.util.List;
 import kpi.ficting.kpitestplatform.common.QuestionType;
 import kpi.ficting.kpitestplatform.domain.Answer;
@@ -14,41 +19,42 @@ import kpi.ficting.kpitestplatform.dto.TestDto;
 import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.dto.TestListInfo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface TestMapper {
 
-  @Mapping(target = "id", source = "id")
-  @Mapping(target = "name", source = "name")
-  @Mapping(target = "description", source = "description")
-  @Mapping(target = "openDate", source = "openDate")
-  @Mapping(target = "deadline", source = "deadline")
-  @Mapping(target = "minutesToComplete", source = "minutesToComplete")
-  @Mapping(target = "maxScore", source = "questions", qualifiedByName = "maxScore")
-  TestInfo toTestInfo(Test test);
-
-  List<TestInfo> toTestInfo(List<Test> tests);
-
-  default TestListInfo toTestListInfo(List<Test> tests) {
-    return TestListInfo.builder()
-        .tests(toTestInfo(tests))
+  default TestInfo toTestInfo(Test test, boolean isAdmin) {
+    return TestInfo.builder()
+        .id(test.getId().toString())
+        .name(test.getName())
+        .openDate(test.getOpenDate())
+        .deadline(test.getDeadline())
+        .minutesToComplete(test.getMinutesToComplete())
+        .maxScore(getMaxScore(test.getQuestions()))
+        .startedSessions(isAdmin ? getStartedSessions(test.getSessions()) : null)
+        .finishedSessions(isAdmin ? getFinishedSessions(test.getSessions()) : null)
         .build();
   }
 
-  @Named("maxScore")
-  default Integer maxScore(List<Question> questions) {
-    return questions.stream()
-        .map(Question::getPoints)
-        .reduce(Integer::sum)
-        .orElse(0);
+  default TestInfo toTestInfo(Test test) {
+    return toTestInfo(test, false);
+  }
+
+  default List<TestInfo> toTestInfo(List<Test> tests, boolean isAdmin) {
+    return tests.stream()
+        .map((test) -> toTestInfo(test, isAdmin))
+        .toList();
+  }
+
+  default TestListInfo toTestListInfo(List<Test> tests, boolean isAdmin) {
+    return TestListInfo.builder()
+        .tests(toTestInfo(tests, isAdmin))
+        .build();
   }
 
   default Test toTest(TestDto testDto) {
     Test test = Test.builder()
         .name(testDto.getName())
-        .description(testDto.getDescription())
         .openDate(testDto.getOpenDate())
         .deadline(testDto.getDeadline())
         .minutesToComplete(testDto.getMinutesToComplete())
@@ -73,32 +79,34 @@ public interface TestMapper {
   }
 
   default List<Answer> toAnswerList(List<AnswerDto> answerDtos, Question question) {
-    return answerDtos.stream()
-        .map((answerDto) -> {
-          if (answerDto.getContent() != null) {
-            return Choice.builder()
-                .content(answerDto.getContent())
-                .isCorrect(answerDto.getIsCorrect())
-                .question(question)
-                .build();
-          } else {
-            return MatchingPair.builder()
+    List<Answer> answers = new ArrayList<>();
+    for (AnswerDto answerDto : answerDtos) {
+      if (question.getType() == QuestionType.MATCHING) {
+        answerDtos.forEach(option ->
+            answers.add(MatchingPair.builder()
                 .leftOption(answerDto.getLeftOption())
-                .rightOption(answerDto.getRightOption())
+                .rightOption(option.getRightOption())
+                .isCorrect(answerDto.getRightOption().equals(option.getRightOption()))
                 .question(question)
-                .build();
-          }
-        })
-        .toList();
+                .build()));
+      } else {
+        answers.add(Choice.builder()
+            .content(answerDto.getContent())
+            .isCorrect(answerDto.getIsCorrect())
+            .question(question)
+            .build());
+      }
+    }
+    return answers;
   }
 
-  default QuestionListDto toQuestionDtoList(List<Question> questions) {
+  default QuestionListDto toQuestionDtoList(List<Question> questions, boolean isAdmin) {
     List<QuestionDto> questionDtos = questions.stream()
         .map((question) -> QuestionDto.builder()
             .content(question.getContent())
             .points(question.getPoints())
             .type(question.getType().getDisplayName())
-            .answers(toAnswerDtoList(question.getAnswers()))
+            .answers(toAnswerDtoList(question.getAnswers(), isAdmin))
             .build())
         .toList();
     return QuestionListDto.builder()
@@ -106,19 +114,20 @@ public interface TestMapper {
         .build();
   }
 
-  default List<AnswerDto> toAnswerDtoList(List<Answer> answers) {
+  default List<AnswerDto> toAnswerDtoList(List<Answer> answers, boolean isAdmin) {
     return answers.stream()
         .map((answer) -> {
           if (answer instanceof MatchingPair matchingPair) {
             return AnswerDto.builder()
                 .leftOption(matchingPair.getLeftOption())
                 .rightOption(matchingPair.getRightOption())
+                .isCorrect(isAdmin ? matchingPair.getIsCorrect() : null)
                 .build();
           } else {
             Choice choice = (Choice) answer;
             return AnswerDto.builder()
                 .content(choice.getContent())
-                .isCorrect(choice.getIsCorrect())
+                .isCorrect(isAdmin ? choice.getIsCorrect() : null)
                 .build();
           }
         })

@@ -3,13 +3,13 @@ package kpi.ficting.kpitestplatform.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
-public enum QuestionType {
+@Getter
+public enum TestMessageType {
 
-  SINGLE_CHOICE("single_choice"),
-  MULTIPLE_CHOICES("multiple_choices"),
-  MATCHING("matching");
+  OPEN("open"),
+  ANSWER("answer"),
+  CLOSE("close");
 
   private final String displayName;
 }

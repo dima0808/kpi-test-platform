@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
-import kpi.ficting.kpitestplatform.config.InvalidJwtException;
+import kpi.ficting.kpitestplatform.config.exception.InvalidJwtException;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
