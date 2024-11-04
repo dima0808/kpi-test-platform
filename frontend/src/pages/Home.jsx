@@ -4,7 +4,7 @@ import TestsTable from '../components/TestsTable';
 
 function Home() {
   return (
-    <div>
+    <div className="container">
       <Sidebar />
       <TestsTable />
     </div>

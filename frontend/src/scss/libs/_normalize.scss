@@ -43,9 +43,22 @@ body {
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   background-color: $background;
   height: 100vh;
+}
+
+.container {
   position: relative;
+  height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.container__center {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 a,
