@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tests from '../assets/icons/tests.svg';
 import arrows from '../assets/icons/arrows.svg';
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -14,7 +14,7 @@ const Sidebar = () => {
 
   const logout = () => {
     Cookies.remove('token');
-    navigate('/login');
+    navigate('/');
   };
   return (
     <>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import create from '../assets/icons/create-tests.svg';
 import importImg from '../assets/icons/import.svg';
@@ -9,10 +9,28 @@ import remove from '../assets/icons/remove.svg';
 const HeaderDropdownMenu = ({ deleteSelectedTests }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  const dropdownRef = useRef(null);
+
+  const handleMenuToggle = (e) => {
+    e.stopPropagation();
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="dropdown">
+    <div className="dropdown" ref={dropdownRef}>
       <button
         onClick={handleMenuToggle}
         className={`dropdown-toggle header-toggle ${

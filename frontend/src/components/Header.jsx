@@ -3,7 +3,7 @@ import HeaderDropdownMenu from './HeaderDropdownMenu';
 import Search from './Search';
 
 import Tests from '../assets/icons/big-tests.svg';
-function Header({ deleteSelectedTests }) {
+function Header({ deleteSelectedTests, onSearch }) {
   return (
     <div className="tests__header">
       <div className="tests__slogan">
@@ -12,7 +12,7 @@ function Header({ deleteSelectedTests }) {
       </div>
       <div className="tests__tools">
         <HeaderDropdownMenu deleteSelectedTests={deleteSelectedTests} />
-        <Search />
+        <Search onSearch={onSearch} />
       </div>
     </div>
   );

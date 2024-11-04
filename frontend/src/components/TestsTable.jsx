@@ -10,6 +10,15 @@ const TestsTable = () => {
   const [tests, setTests] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedTests, setSelectedTests] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearch = (value) => {
+    setSearchValue(value);
+  };
+
+  const filteredTests = tests.filter((test) =>
+    test.name.toLowerCase().includes(searchValue.toLowerCase()),
+  );
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -46,7 +55,7 @@ const TestsTable = () => {
 
   return (
     <div className="tests-table">
-      <Header deleteSelectedTests={deleteSelectedTests} />
+      <Header onSearch={handleSearch} deleteSelectedTests={deleteSelectedTests} />
       <div className="session-table">
         <div className="session-table__header">
           <div className="session-table__header-checkbox">
@@ -62,10 +71,10 @@ const TestsTable = () => {
           </div>
           <div className="session-table__header-actions">Actions</div>
         </div>
-        {tests.length === 0 ? (
+        {filteredTests.length === 0 ? (
           <div className="no-tests">Ой, тестів немає</div>
         ) : (
-          tests.map((test) => (
+          filteredTests.map((test) => (
             <SessionRow
               key={test.id}
               id={test.id}
