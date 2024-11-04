@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 const TestsTable = () => {
   const [tests, setTests] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [selectedTests, setSelectedTests] = useState([]);
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -24,6 +25,18 @@ const TestsTable = () => {
     }
   };
 
+  const deleteSelectedTests = async () => {
+    const token = Cookies.get('token');
+    try {
+      await Promise.all(selectedTests.map((id) => deleteTestById(id, token)));
+      setTests(tests.filter((test) => !selectedTests.includes(test.id)));
+      setSelectedTests([]);
+      setSelectAll(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const token = Cookies.get('token');
     getAllTests(token)
@@ -33,7 +46,7 @@ const TestsTable = () => {
 
   return (
     <div className="tests-table">
-      <Header />
+      <Header deleteSelectedTests={deleteSelectedTests} />
       <div className="session-table">
         <div className="session-table__header">
           <div className="session-table__header-checkbox">
@@ -62,6 +75,7 @@ const TestsTable = () => {
               startedSessions={test.startedSessions}
               selectAll={selectAll}
               onDelete={handleDeleteTest}
+              setSelectedTests={setSelectedTests}
             />
           ))
         )}

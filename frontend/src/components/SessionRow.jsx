@@ -6,15 +6,37 @@ import DropdownMenu from './DropdownMenu';
 import borderBetween from '../assets/icons/brd-between-small.svg';
 import people from '../assets/icons/people.svg';
 
-const SessionRow = ({ id, name, openDate, deadline, startedSessions, selectAll, onDelete }) => {
+const SessionRow = ({
+  id,
+  name,
+  openDate,
+  deadline,
+  startedSessions,
+  selectAll,
+  onDelete,
+  setSelectedTests,
+}) => {
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
     setIsSelected(selectAll);
-  }, [selectAll]);
+    setSelectedTests((prev) => {
+      if (selectAll) {
+        return [...new Set([...prev, id])];
+      } else {
+        return prev.filter((testId) => testId !== id);
+      }
+    });
+  }, [selectAll, id, setSelectedTests]);
 
   const handleCheckboxChange = () => {
     setIsSelected(!isSelected);
+    setSelectedTests((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((testId) => testId !== id);
+      }
+      return [...prev, id];
+    });
   };
 
   const parseDate = (dateString) => {
