@@ -92,14 +92,24 @@ export async function updateTest(data, token) {
 }
 
 export async function deleteTestById(id, token) {
-  const response = await fetch(`${url}/api/v1/admin/tests/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resData = await response.json();
-  if (!response.ok) {
-    throw new Error(resData.message);
+  try {
+    const response = await fetch(`${url}/api/v1/admin/tests/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const text = await response.text();
+    const resData = text ? JSON.parse(text) : {};
+
+    if (!response.ok) {
+      throw new Error(resData.message || 'Failed to delete test');
+    }
+
+    return resData;
+  } catch (error) {
+    console.error('Error deleting test:', error);
+    throw error;
   }
 }

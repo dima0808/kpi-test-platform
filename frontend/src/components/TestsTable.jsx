@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Header from './Header';
 import SessionRow from './SessionRow';
-import { getAllTests } from '../http';
+import { deleteTestById, getAllTests } from '../http';
 import Cookies from 'js-cookie';
 
 const TestsTable = () => {
@@ -12,7 +12,16 @@ const TestsTable = () => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    // Тут можна додати функціональність для вибору всіх тестів
+  };
+
+  const handleDeleteTest = async (id) => {
+    const token = Cookies.get('token');
+    try {
+      await deleteTestById(id, token);
+      setTests(tests.filter((test) => test.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -40,16 +49,22 @@ const TestsTable = () => {
           </div>
           <div className="session-table__header-actions">Actions</div>
         </div>
-        {tests.map((test) => (
-          <SessionRow
-            id={test.id}
-            name={test.name}
-            openDate={test.openDate}
-            deadline={test.deadline}
-            startedSessions={test.startedSessions}
-            selectAll={selectAll}
-          />
-        ))}
+        {tests.length === 0 ? (
+          <div className="no-tests">Ой, тестів немає</div>
+        ) : (
+          tests.map((test) => (
+            <SessionRow
+              key={test.id}
+              id={test.id}
+              name={test.name}
+              openDate={test.openDate}
+              deadline={test.deadline}
+              startedSessions={test.startedSessions}
+              selectAll={selectAll}
+              onDelete={handleDeleteTest}
+            />
+          ))
+        )}
       </div>
     </div>
   );

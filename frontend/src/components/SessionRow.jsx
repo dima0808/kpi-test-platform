@@ -6,7 +6,7 @@ import DropdownMenu from './DropdownMenu';
 import borderBetween from '../assets/icons/brd-between-small.svg';
 import people from '../assets/icons/people.svg';
 
-const SessionRow = ({ id, name, openDate, deadline, startedSessions, selectAll }) => {
+const SessionRow = ({ id, name, openDate, deadline, startedSessions, selectAll, onDelete }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const SessionRow = ({ id, name, openDate, deadline, startedSessions, selectAll }
         <span>{startedSessions}</span>
       </div>
       <div className="session-row__actions">
-        <DropdownMenu />
+        <DropdownMenu id={id} onDelete={onDelete} />
       </div>
     </div>
   );

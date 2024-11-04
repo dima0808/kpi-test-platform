@@ -6,7 +6,7 @@ import clone from '../assets/icons/clone.svg';
 import edit from '../assets/icons/edit.svg';
 import remove from '../assets/icons/remove.svg';
 
-const DropdownMenu = () => {
+const DropdownMenu = ({ id, onDelete }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -62,7 +62,7 @@ const DropdownMenu = () => {
             <img src={edit} alt="edit" />
             Edit
           </div>
-          <div class="dropdown__item remove">
+          <div onClick={() => onDelete(id)} class="dropdown__item remove">
             <img src={remove} alt="remove" />
             Remove
           </div>
