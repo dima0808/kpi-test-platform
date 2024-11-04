@@ -9,6 +9,7 @@
   transform: translateY(-50%);
   transition: left 0.3s ease;
   border-radius: 0 18px 18px 0;
+  z-index: 15;
 
   &.open {
     left: 0;
@@ -29,7 +30,8 @@
   }
 
   &__title {
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     font-size: 32px;
     background: linear-gradient(90deg, #8b00e2, #2d96ff);
     background-clip: text;

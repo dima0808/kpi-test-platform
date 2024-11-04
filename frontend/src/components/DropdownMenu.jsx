@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 
 import info from '../assets/icons/info.svg';
@@ -8,11 +8,28 @@ import remove from '../assets/icons/remove.svg';
 
 const DropdownMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  const handleMenuToggle = (e) => {
+    e.stopPropagation();
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div class="dropdown">
+    <div class="dropdown" ref={dropdownRef}>
       <button
         onClick={handleMenuToggle}
         className={`dropdown-toggle ${isMenuOpen ? 'dropdown-toggle--inactive' : ''}`}>

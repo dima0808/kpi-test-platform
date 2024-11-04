@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 import Header from './Header';
 import SessionRow from './SessionRow';
-import {getAllTests} from "../http";
-import Cookies from "js-cookie";
+import { getAllTests } from '../http';
+import Cookies from 'js-cookie';
 
 const TestsTable = () => {
   const [tests, setTests] = useState([]);
@@ -47,6 +47,7 @@ const TestsTable = () => {
             openDate={test.openDate}
             deadline={test.deadline}
             startedSessions={test.startedSessions}
+            selectAll={selectAll}
           />
         ))}
       </div>

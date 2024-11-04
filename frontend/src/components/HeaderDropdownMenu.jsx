@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-import create from '../assets/icons/create.svg';
+import create from '../assets/icons/create-tests.svg';
 import importImg from '../assets/icons/import.svg';
 import exportImg from '../assets/icons/export.svg';
 import remove from '../assets/icons/remove.svg';
@@ -34,7 +34,7 @@ const HeaderDropdownMenu = () => {
         </svg>
       </button>
       {isMenuOpen && (
-        <div class="dropdown__menu">
+        <div class="dropdown__menu header-menu">
           <div class="dropdown__item">
             <img src={create} alt="info" />
             Create
