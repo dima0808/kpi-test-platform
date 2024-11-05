@@ -21,9 +21,9 @@ public class CollectionServiceImpl implements CollectionService {
   }
 
   @Override
-  public Collection findById(Long collectionId) {
-    return collectionRepository.findById(collectionId)
-        .orElseThrow(() -> new CollectionNotFoundException(collectionId));
+  public Collection findByName(String collectionName) {
+    return collectionRepository.findByName(collectionName)
+        .orElseThrow(() -> new CollectionNotFoundException(collectionName));
   }
 
   @Override

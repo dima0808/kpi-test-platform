@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import kpi.ficting.kpitestplatform.validation.ValidQuestionSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
+@ValidQuestionSet
 public class TestDto {
 
   @NotBlank(message = "Test name is mandatory")
@@ -37,8 +39,11 @@ public class TestDto {
   @Min(value = 1, message = "Minutes to complete test must be greater than 0")
   private Integer minutesToComplete;
 
-  @NotNull(message = "Questions are mandatory")
   @Size(min = 1, message = "Test must have at least one question")
   @Valid
   private List<QuestionDto> questions;
+
+  @Size(min = 1, message = "Test must have at least one question")
+  @Valid
+  private List<SampleDto> samples;
 }

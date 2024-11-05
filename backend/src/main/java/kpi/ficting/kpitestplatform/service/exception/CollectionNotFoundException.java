@@ -2,7 +2,7 @@ package kpi.ficting.kpitestplatform.service.exception;
 
 public class CollectionNotFoundException extends RuntimeException {
 
-  public CollectionNotFoundException(Long id) {
-    super("Collection with id " + id + " not found");
+  public CollectionNotFoundException(String name) {
+    super("Collection with name " + name + " not found");
   }
 }

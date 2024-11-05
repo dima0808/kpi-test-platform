@@ -7,7 +7,7 @@ public interface CollectionService {
 
   List<Collection> findAll();
 
-  Collection findById(Long collectionId);
+  Collection findByName(String collectionName);
 
   Collection create(Collection collection);
 

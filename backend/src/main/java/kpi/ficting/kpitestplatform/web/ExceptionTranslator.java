@@ -8,8 +8,9 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
 import kpi.ficting.kpitestplatform.config.exception.InvalidJwtException;
+import kpi.ficting.kpitestplatform.service.exception.CollectionAlreadyExistsException;
+import kpi.ficting.kpitestplatform.service.exception.CollectionNotFoundException;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-@Slf4j
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<CustomErrorResponse> handleBadCredentialsException(WebRequest request) {
-    log.info("BadCredentialsException raised");
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(UNAUTHORIZED.value())
         .error(UNAUTHORIZED.getReasonPhrase())
@@ -40,7 +39,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   @ExceptionHandler(InvalidJwtException.class)
   public ResponseEntity<CustomErrorResponse> handleInvalidJwtException(InvalidJwtException exc,
       WebRequest request) {
-    log.info("InvalidJwtException raised");
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(FORBIDDEN.value())
         .error(FORBIDDEN.getReasonPhrase())
@@ -50,10 +48,9 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(FORBIDDEN).body(errorResponse);
   }
 
-  @ExceptionHandler(TestNotFoundException.class)
-  public ResponseEntity<CustomErrorResponse> handleTestNotFoundException(TestNotFoundException exc,
+  @ExceptionHandler({TestNotFoundException.class, CollectionNotFoundException.class})
+  public ResponseEntity<CustomErrorResponse> handleTestNotFoundException(RuntimeException exc,
       WebRequest request) {
-    log.info("TestNotFoundException raised");
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(NOT_FOUND.value())
         .error(NOT_FOUND.getReasonPhrase())
@@ -63,10 +60,21 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(NOT_FOUND).body(errorResponse);
   }
 
+  @ExceptionHandler(CollectionAlreadyExistsException.class)
+  public ResponseEntity<CustomErrorResponse> handleTestNotFoundException(
+      CollectionAlreadyExistsException exc, WebRequest request) {
+    CustomErrorResponse errorResponse = CustomErrorResponse.builder()
+        .status(BAD_REQUEST.value())
+        .error(BAD_REQUEST.getReasonPhrase())
+        .message(exc.getMessage())
+        .path(request.getDescription(false).substring(4))
+        .build();
+    return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
+  }
+
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
-    log.info("Input params validation failed");
     return ResponseEntity.status(BAD_REQUEST)
         .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors(), request));
   }

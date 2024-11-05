@@ -1,12 +1,10 @@
 package kpi.ficting.kpitestplatform.web;
 
 import jakarta.validation.Valid;
-import java.util.UUID;
 import kpi.ficting.kpitestplatform.dto.CollectionDto;
 import kpi.ficting.kpitestplatform.dto.CollectionInfo;
 import kpi.ficting.kpitestplatform.dto.CollectionListInfo;
 import kpi.ficting.kpitestplatform.dto.QuestionListDto;
-import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.service.CollectionService;
 import kpi.ficting.kpitestplatform.service.QuestionService;
 import kpi.ficting.kpitestplatform.service.mapper.CollectionMapper;
@@ -38,17 +36,18 @@ public class CollectionManagementController {
     return ResponseEntity.ok(collectionMapper.toCollectionListInfo(collectionService.findAll()));
   }
 
-  @GetMapping("{collectionId}")
-  public ResponseEntity<CollectionInfo> getCollectionInfoById(@PathVariable Long collectionId) {
+  @GetMapping("{collectionName}")
+  public ResponseEntity<CollectionInfo> getCollectionInfoByName(
+      @PathVariable String collectionName) {
     return ResponseEntity.ok(
-        collectionMapper.toCollectionInfo(collectionService.findById(collectionId)));
+        collectionMapper.toCollectionInfo(collectionService.findByName(collectionName)));
   }
 
-  @GetMapping("{collectionId}/questions")
-  public ResponseEntity<QuestionListDto> getQuestionsByCollectionId(
-      @PathVariable Long collectionId) {
+  @GetMapping("{collectionName}/questions")
+  public ResponseEntity<QuestionListDto> getQuestionsByCollectionName(
+      @PathVariable String collectionName) {
     return ResponseEntity.ok(
-        questionMapper.toQuestionListDto(questionService.findByCollectionId(collectionId), true));
+        questionMapper.toQuestionListDto(questionService.findByCollectionName(collectionName), true));
   }
 
   @PostMapping

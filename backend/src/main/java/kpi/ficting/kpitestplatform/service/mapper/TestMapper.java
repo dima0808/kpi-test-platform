@@ -9,16 +9,10 @@ import kpi.ficting.kpitestplatform.domain.Test;
 import kpi.ficting.kpitestplatform.dto.TestDto;
 import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.dto.TestListInfo;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
-@RequiredArgsConstructor
-public abstract class TestMapper {
+public interface TestMapper {
 
-  private final QuestionMapper questionMapper;
-
-  public TestInfo toTestInfo(Test test, boolean isAdmin) {
+  default TestInfo toTestInfo(Test test, boolean isAdmin) {
     return TestInfo.builder()
         .id(test.getId().toString())
         .name(test.getName())
@@ -32,30 +26,21 @@ public abstract class TestMapper {
         .build();
   }
 
-  public TestInfo toTestInfo(Test test) {
+  default TestInfo toTestInfo(Test test) {
     return toTestInfo(test, false);
   }
 
-  public List<TestInfo> toTestInfo(List<Test> tests, boolean isAdmin) {
+  default List<TestInfo> toTestInfo(List<Test> tests, boolean isAdmin) {
     return tests.stream()
         .map((test) -> toTestInfo(test, isAdmin))
         .toList();
   }
 
-  public TestListInfo toTestListInfo(List<Test> tests, boolean isAdmin) {
+  default TestListInfo toTestListInfo(List<Test> tests, boolean isAdmin) {
     return TestListInfo.builder()
         .tests(toTestInfo(tests, isAdmin))
         .build();
   }
 
-  public Test toTest(TestDto testDto) {
-    Test test = Test.builder()
-        .name(testDto.getName())
-        .openDate(testDto.getOpenDate())
-        .deadline(testDto.getDeadline())
-        .minutesToComplete(testDto.getMinutesToComplete())
-        .build();
-    test.setQuestions(questionMapper.toQuestionList(testDto.getQuestions(), test));
-    return test;
-  }
+  Test toTest(TestDto testDto);
 }

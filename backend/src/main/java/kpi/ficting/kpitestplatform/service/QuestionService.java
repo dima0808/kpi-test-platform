@@ -8,5 +8,5 @@ public interface QuestionService {
 
   List<Question> findByTestId(UUID testId);
 
-  List<Question> findByCollectionId(Long collectionId);
+  List<Question> findByCollectionName(String collectionName);
 }
