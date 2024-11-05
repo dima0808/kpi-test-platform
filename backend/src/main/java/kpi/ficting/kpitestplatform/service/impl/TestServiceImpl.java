@@ -37,13 +37,18 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
+  public Test save(Test test) {
+    return testRepository.save(test);
+  }
+
+  @Override
   public Test update(UUID testId, Test test) {
     Test testToUpdate = findById(testId);
     if (getStartedSessions(test.getSessions()) != 0) {
       throw new ImmutableTestException(testId, "has started sessions");
     }
     if (getFinishedSessions(test.getSessions()) != 0) {
-      throw new ImmutableTestException(testId, "has finished sessions"); // todo: ask Valerii about test immutability if it has finished sessions
+      throw new ImmutableTestException(testId, "has finished sessions");
     }
     testToUpdate.setName(test.getName());
     testToUpdate.setOpenDate(test.getOpenDate());

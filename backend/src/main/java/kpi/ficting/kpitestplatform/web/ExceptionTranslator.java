@@ -10,6 +10,7 @@ import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
 import kpi.ficting.kpitestplatform.config.exception.InvalidJwtException;
 import kpi.ficting.kpitestplatform.service.exception.CollectionAlreadyExistsException;
 import kpi.ficting.kpitestplatform.service.exception.CollectionNotFoundException;
+import kpi.ficting.kpitestplatform.service.exception.QuestionMergeConflictException;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -49,7 +50,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler({TestNotFoundException.class, CollectionNotFoundException.class})
-  public ResponseEntity<CustomErrorResponse> handleTestNotFoundException(RuntimeException exc,
+  public ResponseEntity<CustomErrorResponse> handleNotFoundException(RuntimeException exc,
       WebRequest request) {
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(NOT_FOUND.value())
@@ -60,9 +61,10 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(NOT_FOUND).body(errorResponse);
   }
 
-  @ExceptionHandler(CollectionAlreadyExistsException.class)
-  public ResponseEntity<CustomErrorResponse> handleTestNotFoundException(
-      CollectionAlreadyExistsException exc, WebRequest request) {
+  @ExceptionHandler({CollectionAlreadyExistsException.class, IllegalArgumentException.class,
+      QuestionMergeConflictException.class})
+  public ResponseEntity<CustomErrorResponse> handleBadRequestException(RuntimeException exc,
+      WebRequest request) {
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(BAD_REQUEST.value())
         .error(BAD_REQUEST.getReasonPhrase())
