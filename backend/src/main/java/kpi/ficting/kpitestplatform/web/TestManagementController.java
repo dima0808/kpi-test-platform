@@ -8,6 +8,7 @@ import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.dto.TestListInfo;
 import kpi.ficting.kpitestplatform.service.QuestionService;
 import kpi.ficting.kpitestplatform.service.TestService;
+import kpi.ficting.kpitestplatform.service.mapper.QuestionMapper;
 import kpi.ficting.kpitestplatform.service.mapper.TestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestManagementController {
 
-  private final QuestionService questionService;
   private final TestService testService;
   private final TestMapper testMapper;
+
+  private final QuestionService questionService;
+  private final QuestionMapper questionMapper;
 
   @GetMapping
   public ResponseEntity<TestListInfo> getAllTests() {
@@ -43,7 +46,7 @@ public class TestManagementController {
   @GetMapping("{testId}/questions")
   public ResponseEntity<QuestionListDto> getQuestionsByTestId(@PathVariable UUID testId) {
     return ResponseEntity.ok(
-        testMapper.toQuestionDtoList(questionService.findByTestId(testId), true));
+        questionMapper.toQuestionListDto(questionService.findByTestId(testId), true));
   }
 
   @PostMapping

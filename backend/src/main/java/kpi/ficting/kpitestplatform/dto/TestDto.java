@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class TestDto {
 
   @NotBlank(message = "Test name is mandatory")
-  @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+  @Size(min = 3, max = 100, message = "Test name must be between 3 and 100 characters")
   private String name;
 
   @FutureOrPresent(message = "Open date must be in the present or future")

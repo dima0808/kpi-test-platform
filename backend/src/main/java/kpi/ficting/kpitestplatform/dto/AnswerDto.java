@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @ValidAnswer
 public class AnswerDto {
 
+  private Long id;
+
   private Boolean isCorrect;
 
   @Size(min = 3, max = 250, message = "Answer must be between 3 and 250 characters")

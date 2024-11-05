@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QuestionDto {
 
+  private Long id;
+
   @Size(min = 3, max = 250, message = "Question must be between 3 and 250 characters")
   private String content;
 

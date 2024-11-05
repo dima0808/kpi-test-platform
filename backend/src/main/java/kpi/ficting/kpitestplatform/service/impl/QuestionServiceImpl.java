@@ -23,4 +23,11 @@ public class QuestionServiceImpl implements QuestionService {
     questions.forEach(question -> Hibernate.initialize(question.getAnswers()));
     return questions;
   }
+
+  @Override
+  public List<Question> findByCollectionId(Long collectionId) {
+    List<Question> questions = questionRepository.findByCollectionId(collectionId);
+    questions.forEach(question -> Hibernate.initialize(question.getAnswers()));
+    return questions;
+  }
 }
