@@ -65,7 +65,12 @@ const HeaderDropdownMenu = ({ deleteSelectedTests }) => {
             <img src={exportImg} alt="edit" />
             Export
           </div>
-          <div onClick={deleteSelectedTests} className="dropdown__item remove">
+          <div
+            onClick={() => {
+              deleteSelectedTests();
+              setIsMenuOpen(false);
+            }}
+            className="dropdown__item remove">
             <img src={remove} alt="remove" />
             Remove
           </div>
