@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getQuestionsByTestId } from '../http';
 import Cookies from 'js-cookie';
+import SingleChoice from '../components/SingleChoice';
+import MultipleChoice from '../components/MultipleChoice';
+import MatchPairs from '../components/MatchPairs';
 
 function QuestionPage() {
   const { id } = useParams();
@@ -35,7 +38,9 @@ function QuestionPage() {
         </div>
         <h1 className="question__type">Choose one option</h1>
         <h1 className="question__name">How to print ‘Hello world’ to the console output?</h1>
-        <div className="brbrbr">Якийсь тип питання</div>
+        {/* <SingleChoice /> */}
+        {/* <MultipleChoice /> */}
+        {/* <MatchPairs /> */}
         <div className="question__next">
           <button className="question__next-btn">Next</button>
         </div>
