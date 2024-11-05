@@ -12,7 +12,7 @@ function Login() {
   return (
     <div>
       <h1>Login</h1>
-      <input ref={usernameRef} type="text" placeholder="Username" />
+      <input ref={usernameRef} value="admin" type="text" placeholder="Username" />
       <input ref={passwordRef} type="password" placeholder="Password" />
       <button
         onClick={() => {

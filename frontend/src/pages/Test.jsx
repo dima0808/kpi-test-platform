@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import duration from '../assets/icons/duration.svg';
 import question from '../assets/icons/question.svg';
 import score from '../assets/icons/score.svg';
@@ -9,6 +9,7 @@ import { getTestById } from '../http';
 
 function Test() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [test, setTest] = useState(null);
 
   useEffect(() => {
@@ -32,6 +33,10 @@ function Test() {
     const hours = Math.floor((minutes % 1440) / 60);
     const mins = minutes % 60;
     return `${days > 0 ? `${days}d ` : ''}${hours > 0 ? `${hours}h ` : ''}${mins}m`;
+  };
+
+  const startTest = () => {
+    navigate(`/${id}/start`);
   };
 
   return (
@@ -65,7 +70,9 @@ function Test() {
               <input type="text" placeholder="Full Name" />
             </div>
           </div>
-          <button className="test__button">Take a test</button>
+          <button onClick={startTest} className="test__button">
+            Take a test
+          </button>
         </form>
       </div>
     </div>

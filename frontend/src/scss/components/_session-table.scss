@@ -3,6 +3,10 @@
   margin: 0 auto;
   border-radius: 8px;
 
+  &__body {
+    padding-bottom: 150px;
+  }
+
   &__header {
     display: flex;
     align-items: center;
@@ -94,6 +98,21 @@
     &-actions {
       width: 180px;
       text-align: center;
+    }
+  }
+}
+
+.no-tests {
+  text-align: center;
+  font-size: 48px;
+  margin-top: 90px;
+
+  .link-to-create {
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

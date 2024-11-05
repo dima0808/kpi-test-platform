@@ -10,6 +10,11 @@ const DropdownMenu = ({ id, onDelete }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const handleInfo = () => {
+    window.open(`/${id}`, '_blank');
+    setIsMenuOpen(false);
+  };
+
   const handleMenuToggle = (e) => {
     e.stopPropagation();
     setIsMenuOpen(!isMenuOpen);
@@ -50,7 +55,7 @@ const DropdownMenu = ({ id, onDelete }) => {
       </button>
       {isMenuOpen && (
         <div className="dropdown__menu">
-          <div className="dropdown__item">
+          <div onClick={handleInfo} className="dropdown__item">
             <img src={info} alt="info" />
             Info
           </div>
