@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 
-function MultipleChoice() {
+function MultipleChoice({ options }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
-
-  const options = [
-    'System.out.println("Hello world");',
-    'Sigma.out.println("Hello world");',
-    'print("Hello world")',
-    'HelloWorld("print")',
-  ];
 
   const handleOptionChange = (index) => {
     setSelectedOptions((prevSelected) => {

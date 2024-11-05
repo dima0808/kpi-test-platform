@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 
-function SingleChoice() {
+function SingleChoice({ options }) {
   const [selectedOption, setSelectedOption] = useState(null);
-
-  const options = [
-    'System.out.println("Hello world");',
-    'Sigma.out.println("Hello world");',
-    'print("Hello world")',
-    'HelloWorld("print")',
-  ];
 
   const handleOptionChange = (index) => {
     setSelectedOption(index);
