@@ -1,14 +1,19 @@
 package kpi.ficting.kpitestplatform.service;
 
+import java.util.List;
 import java.util.UUID;
+import kpi.ficting.kpitestplatform.domain.Question;
 import kpi.ficting.kpitestplatform.domain.TestSession;
-import kpi.ficting.kpitestplatform.dto.ResponseEntryDto;
 
 public interface TestSessionService {
 
+  TestSession findByCredentials(UUID testId, String credentials);
+
   TestSession startTestSession(UUID testId, TestSession testSession);
 
-  TestSession saveAnswer(UUID testId, ResponseEntryDto responseEntryDto);
+  Question nextQuestion(UUID testId, String credentials);
 
-  TestSession finishTestSession(UUID testId);
+  TestSession saveAnswer(UUID testId, String credentials, List<Long> answerIds);
+
+  TestSession finishTestSession(UUID testId, String credentials);
 }

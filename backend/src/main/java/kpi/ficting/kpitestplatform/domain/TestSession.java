@@ -33,6 +33,8 @@ public class TestSession {
 
   private Boolean isFinished;
 
+  private Integer currentQuestionIndex;
+
   @OneToMany(mappedBy = "testSession", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
   private List<ResponseEntry> responses;
 

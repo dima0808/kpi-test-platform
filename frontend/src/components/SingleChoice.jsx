@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function SingleChoice({ options }) {
-  const [selectedOption, setSelectedOption] = useState(null);
+function SingleChoice({ answers, selectedAnswers, setSelectedAnswers }) {
 
-  const handleOptionChange = (index) => {
-    setSelectedOption(index);
+  const handleAnswerChange = (id) => {
+    setSelectedAnswers([id]);
   };
 
   return (
     <div className="single-choice">
-      {options.map((option, index) => (
-        <label key={index} className="option">
+      {answers.map((answer) => (
+        <label key={answer.id} className="option">
           <input
             type="radio"
             name="single-choice"
-            value={index}
-            checked={selectedOption === index}
-            onChange={() => handleOptionChange(index)}
+            value={answer.id}
+            checked={selectedAnswers[0] === answer.id}
+            onChange={() => handleAnswerChange(answer.id)}
           />
           <span className="custom-radio"></span>
-          <span>{option}</span>
+          <span>{answer.content}</span>
         </label>
       ))}
     </div>

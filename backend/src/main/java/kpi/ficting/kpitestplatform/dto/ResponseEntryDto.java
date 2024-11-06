@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponseEntryDto {
 
-  private Long questionId;
   private List<Long> answerIds;
 }
