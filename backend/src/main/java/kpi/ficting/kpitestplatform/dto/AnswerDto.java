@@ -18,12 +18,12 @@ public class AnswerDto {
 
   private Boolean isCorrect;
 
-  @Size(min = 3, max = 250, message = "Answer must be between 3 and 250 characters")
+  @Size(min = 1, max = 250, message = "Answer must be between 1 and 250 characters")
   private String content;
 
-  @Size(min = 1, max = 250, message = "Answer must be between 3 and 250 characters")
+  @Size(min = 1, max = 250, message = "Answer must be between 1 and 250 characters")
   private String leftOption;
 
-  @Size(min = 1, max = 250, message = "Answer must be between 3 and 250 characters")
+  @Size(min = 1, max = 250, message = "Answer must be between 1 and 250 characters")
   private String rightOption;
 }

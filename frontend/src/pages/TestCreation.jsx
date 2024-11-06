@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import QuestionForm from '../components/QuestionForm';
 import { createTest } from '../http';
 import Cookies from 'js-cookie';
+import {useNavigate} from "react-router-dom";
 
 function TestCreation() {
   const [testName, setTestName] = useState('');
@@ -10,7 +11,8 @@ function TestCreation() {
   const [minutesToComplete, setMinutesToComplete] = useState(10);
   const [questions, setQuestions] = useState([]);
   const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(null);
+
+  const navigate = useNavigate();
 
   const addQuestion = () => {
     setQuestions([
@@ -49,22 +51,15 @@ function TestCreation() {
       openDate,
       deadline,
       minutesToComplete,
-      questions: questions.map(({ id, ...q }) => q),
-      samples: [
-        {
-          collectionName: 'L1',
-          points: 1,
-          questionsCount: 1,
-        },
-      ],
+      questions: questions.map(({ id, ...q }) => q)
     };
 
     const token = Cookies.get('token');
 
     try {
-      const response = await createTest(testData, token);
-      setSuccess('Test created successfully!');
-      console.log('Response:', response);
+      createTest(testData, token).then(() => {
+        navigate('/tests');
+      });
     } catch (error) {
       setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
     }
@@ -142,7 +137,6 @@ function TestCreation() {
       </div>
 
       {errors.submit && <p className="error">{errors.submit}</p>}
-      {success && <p className="success">{success}</p>}
     </div>
   );
 }

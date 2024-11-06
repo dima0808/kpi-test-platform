@@ -10,8 +10,10 @@ import kpi.ficting.kpitestplatform.dto.TestListInfo;
 import kpi.ficting.kpitestplatform.service.QuestionService;
 import kpi.ficting.kpitestplatform.service.SampleService;
 import kpi.ficting.kpitestplatform.service.TestService;
+import kpi.ficting.kpitestplatform.service.TestSessionService;
 import kpi.ficting.kpitestplatform.service.mapper.QuestionMapper;
 import kpi.ficting.kpitestplatform.service.mapper.TestMapper;
+import kpi.ficting.kpitestplatform.service.mapper.TestSessionMapper;
 import kpi.ficting.kpitestplatform.service.mapper.impl.SampleMapperImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,6 +41,9 @@ public class TestManagementController {
 
   private final SampleService sampleService;
   private final SampleMapperImpl sampleMapper;
+
+  private final TestSessionService testSessionService;
+  private final TestSessionMapper testSessionMapper;
 
   @GetMapping
   public ResponseEntity<TestListInfo> getAllTests() {
@@ -58,6 +64,20 @@ public class TestManagementController {
   @GetMapping("{testId}/samples")
   public ResponseEntity<SampleListDto> getSamplesByTestId(@PathVariable UUID testId) {
     return ResponseEntity.ok(sampleMapper.toSampleListDto(sampleService.findByTestId(testId)));
+  }
+
+  @GetMapping("{testId}/finishedSessions")
+  public ResponseEntity<Object> getFinishedSessionsByTestId(@PathVariable UUID testId,
+      @RequestParam(defaultValue = "") String credentials) {
+    if (credentials.isEmpty()) {
+      return ResponseEntity.ok(
+          testSessionMapper.toTestSessionListDto(
+              testSessionService.findByTestId(testId, true), false));
+    } else {
+      return ResponseEntity.ok(
+          testSessionMapper.toTestSessionDto(testSessionService.findByTestIdAndCredentials(
+              testId, credentials, true), true, false));
+    }
   }
 
   @PostMapping

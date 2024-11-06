@@ -37,7 +37,7 @@ public class TestSessionController {
     TestMessage testMessage = TestMessage.builder()
         .type(TestMessageType.START)
         .content("Test session started. " + credentials)
-        .testSession(testSessionMapper.toTestSessionDto(testSession))
+        .testSession(testSessionMapper.toTestSessionDto(testSession, false))
         .build();
     messagingTemplate.convertAndSendToUser(credentials, "/queue/testSession", testMessage);
     return testMessage;
@@ -47,12 +47,12 @@ public class TestSessionController {
   public TestMessage nextQuestion(@DestinationVariable UUID testId,
       @Header("credentials") String credentials) {
     Question question = testSessionService.nextQuestion(testId, credentials);
-    TestSession testSession = testSessionService.findByCredentials(testId, credentials);
+    TestSession testSession = testSessionService.findByTestIdAndCredentials(testId, credentials);
     TestMessage testMessage = TestMessage.builder()
         .type(TestMessageType.NEXT_QUESTION)
         .content("Next question. " + credentials)
         .question(questionMapper.toQuestionDto(question, false))
-        .testSession(testSessionMapper.toTestSessionDto(testSession))
+        .testSession(testSessionMapper.toTestSessionDto(testSession, false))
         .build();
     messagingTemplate.convertAndSendToUser(credentials, "/queue/testSession", testMessage);
     return testMessage;
@@ -66,7 +66,7 @@ public class TestSessionController {
     TestMessage testMessage = TestMessage.builder()
         .type(TestMessageType.SAVE_ANSWER)
         .content("Save answer. " + credentials)
-        .testSession(testSessionMapper.toTestSessionDto(testSession))
+        .testSession(testSessionMapper.toTestSessionDto(testSession, false))
         .build();
     messagingTemplate.convertAndSendToUser(credentials, "/queue/testSession", testMessage);
     return testMessage;
@@ -80,7 +80,7 @@ public class TestSessionController {
     TestMessage testMessage = TestMessage.builder()
         .type(TestMessageType.FINISH)
         .content("Test session finished. " + credentials)
-        .testSession(testSessionMapper.toTestSessionDto(testSession))
+        .testSession(testSessionMapper.toTestSessionDto(testSession, false))
         .build();
     messagingTemplate.convertAndSendToUser(credentials, "/queue/testSession", testMessage);
     return testMessage;

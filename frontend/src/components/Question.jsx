@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SingleChoice from '../components/SingleChoice';
 import MultipleChoices from './MultipleChoices';
 import MatchPairs from '../components/MatchPairs';
 
 function Question({ test, handleSaveAnswer, handleFinishTest, testSession, question }) {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [endTime, setEndTime] = useState(null);
+
+  useEffect(() => {
+    if (!endTime) {
+      const calculateEndTime = () => {
+        const deadline = new Date(test.deadline).getTime();
+        const now = new Date().getTime();
+        const timeToDeadline = (deadline - now) / 1000; // in seconds
+        const timeToComplete = test.minutesToComplete * 60; // in seconds
+        return now + Math.min(timeToDeadline, timeToComplete) * 1000;
+      };
+      setEndTime(calculateEndTime());
+    }
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const timeLeft = Math.max(Math.ceil((endTime - now) / 1000), 0);
+      setTimeLeft(timeLeft);
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        handleSaveAnswer(selectedAnswers);
+        handleFinishTest();
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [endTime, handleFinishTest, handleSaveAnswer, selectedAnswers, test]);
 
   const handleNext = () => {
     handleSaveAnswer(selectedAnswers);
-    if (testSession.currentQuestionIndex === test.questionsCount - 1) {
-      handleFinishTest();
-    }
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   if (!question) {
@@ -24,7 +53,9 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
           <div className="question__counter">
             {testSession.currentQuestionIndex + 1}/{test.questionsCount}
           </div>
-          <div className="timer__count">44:56</div>
+          {timeLeft !== 0 && <div className={`timer__count ${timeLeft <= 60 ? 'timer__red' : ''}`}>
+            {formatTime(timeLeft)}
+          </div>}
         </div>
         <h1 className="question__type">
           {(() => {

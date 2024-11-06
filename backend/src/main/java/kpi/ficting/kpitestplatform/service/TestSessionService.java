@@ -7,7 +7,11 @@ import kpi.ficting.kpitestplatform.domain.TestSession;
 
 public interface TestSessionService {
 
-  TestSession findByCredentials(UUID testId, String credentials);
+  TestSession findByTestIdAndCredentials(UUID testId, String credentials, boolean finishedOnly);
+
+  TestSession findByTestIdAndCredentials(UUID testId, String credentials);
+
+  List<TestSession> findByTestId(UUID testId, boolean finishedOnly);
 
   TestSession startTestSession(UUID testId, TestSession testSession);
 

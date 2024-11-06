@@ -62,6 +62,9 @@ public interface QuestionMapper {
   }
 
   default List<Question> toQuestionList(List<QuestionDto> questionDtos, Test test) {
+    if (questionDtos == null || questionDtos.isEmpty()) {
+      return List.of();
+    }
     return questionDtos.stream()
         .map((questionDto) -> {
           Question question = Question.builder()

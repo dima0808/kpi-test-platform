@@ -19,6 +19,9 @@ public class SampleMapperImpl implements SampleMapper {
 
   @Override
   public List<Sample> toSampleList(List<SampleDto> sampleDtos, Test test) {
+    if (sampleDtos == null || sampleDtos.isEmpty()) {
+      return List.of();
+    }
     return sampleDtos.stream()
         .map((sampleDto) -> {
           Collection collection = collectionService.findByName(sampleDto.getCollectionName());

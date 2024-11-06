@@ -1,6 +1,8 @@
 package kpi.ficting.kpitestplatform.service.impl;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,18 +32,48 @@ public class TestSessionServiceImpl implements TestSessionService {
   private final TestSessionRepository testSessionRepository;
 
   @Override
-  public TestSession findByCredentials(UUID testId, String credentials) {
+  @Transactional
+  public TestSession findByTestIdAndCredentials(UUID testId, String credentials,
+      boolean finishedOnly) {
     String studentGroup = credentials.split(":")[0];
     String studentName = credentials.split(":")[1];
-    return testSessionRepository.findTestSessionByStudentGroupAndStudentNameAndTestId(
-        studentGroup, studentName, testId)
+    TestSession testSession = testSessionRepository.findTestSessionByStudentGroupAndStudentNameAndTestId(
+            studentGroup, studentName, testId)
         .orElseThrow(() -> new TestSessionNotFoundException(studentGroup, studentName));
+    if (finishedOnly && testSession.getFinishedAt() == null) {
+      throw new TestSessionNotFoundException(studentGroup, studentName);
+    }
+    Hibernate.initialize(testSession.getResponses());
+    testSession.getResponses().forEach(r -> Hibernate.initialize(r.getQuestion().getAnswers()));
+    return testSession;
+  }
+
+  @Override
+  @Transactional
+  public TestSession findByTestIdAndCredentials(UUID testId, String credentials) {
+    return findByTestIdAndCredentials(testId, credentials, false);
+  }
+
+  @Override
+  @Transactional
+  public List<TestSession> findByTestId(UUID testId, boolean finishedOnly) {
+    List<TestSession> sessions = testSessionRepository.findTestSessionsByTestId(testId);
+    if (finishedOnly) {
+      sessions = sessions.stream()
+          .filter(s -> s.getFinishedAt() != null)
+          .collect(Collectors.toList());
+    }
+    sessions.forEach(s -> {
+      Hibernate.initialize(s.getResponses());
+      s.getResponses().forEach(r -> Hibernate.initialize(r.getQuestion().getAnswers()));
+    });
+    return sessions;
   }
 
   @Override
   public TestSession startTestSession(UUID testId, TestSession testSession) {
-    if (testSessionRepository.existsByStudentGroupAndStudentName(
-        testSession.getStudentGroup(), testSession.getStudentName())) {
+    if (testSessionRepository.existsByStudentGroupAndStudentNameAndTestId(
+        testSession.getStudentGroup(), testSession.getStudentName(), testId)) {
       throw new TestSessionAlreadyExistsException(
           testSession.getStudentGroup(), testSession.getStudentName());
     }
@@ -52,7 +84,9 @@ public class TestSessionServiceImpl implements TestSessionService {
     Collections.shuffle(responses);
     testSession.setResponses(responses);
     testSession.setTest(test);
-    testSession.setIsFinished(false);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    String formattedNow = LocalDateTime.now().format(formatter);
+    testSession.setStartedAt(LocalDateTime.parse(formattedNow, formatter));
     testSession.setCurrentQuestionIndex(0);
     return testSessionRepository.save(testSession);
   }
@@ -60,20 +94,16 @@ public class TestSessionServiceImpl implements TestSessionService {
   @Override
   @Transactional
   public Question nextQuestion(UUID testId, String credentials) {
-    TestSession testSession = findByCredentials(testId, credentials);
-    Hibernate.initialize(testSession.getResponses());
+    TestSession testSession = findByTestIdAndCredentials(testId, credentials);
     ResponseEntry responseEntry = nextResponseEntry(testSession);
-    Hibernate.initialize(responseEntry.getQuestion().getAnswers());
     return responseEntry.getQuestion();
   }
 
   @Override
   @Transactional
   public TestSession saveAnswer(UUID testId, String credentials, List<Long> answerIds) {
-    TestSession testSession = findByCredentials(testId, credentials);
-    Hibernate.initialize(testSession.getResponses());
+    TestSession testSession = findByTestIdAndCredentials(testId, credentials);
     ResponseEntry responseEntry = nextResponseEntry(testSession);
-    Hibernate.initialize(responseEntry.getQuestion().getAnswers());
     List<Answer> answers = new ArrayList<>(responseEntry.getQuestion().getAnswers());
     answers = answers.stream()
         .filter(a -> answerIds.contains(a.getId()))
@@ -87,9 +117,13 @@ public class TestSessionServiceImpl implements TestSessionService {
   }
 
   @Override
+  @Transactional
   public TestSession finishTestSession(UUID testId, String credentials) {
-    TestSession testSession = findByCredentials(testId, credentials);
-    testSession.setIsFinished(true);
+    TestSession testSession = findByTestIdAndCredentials(testId, credentials);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    String formattedNow = LocalDateTime.now().format(formatter);
+    testSession.setFinishedAt(LocalDateTime.parse(formattedNow, formatter)); // todo: not always for some reason
+    System.out.println("Test session finished: " + testSession.getFinishedAt());
     return testSessionRepository.save(testSession);
   }
 

@@ -38,6 +38,8 @@ function Test() {
         setTestSession(testSession);
         if (testSession.currentQuestionIndex <= test.questionsCount - 1) {
           handleNextQuestion();
+        } else {
+          handleFinishTest();
         }
         break;
       case 'NEXT_QUESTION':
@@ -130,6 +132,22 @@ function Test() {
     setCredentials(`${studentGroup}:${studentName}`);
     Cookies.set('group', studentGroup);
     Cookies.set('name', studentName);
+  };
+
+  window.onbeforeunload = function (e) {
+    if (isStarted) {
+      e = e || window.event;
+      const confirmationMessage = 'Sure?';
+      // For IE and Firefox prior to version 4
+      if (e) {
+        e.returnValue = confirmationMessage;
+      }
+      // For Safari
+      if (window.confirm(confirmationMessage)) {
+        handleFinishTest();
+      }
+      return confirmationMessage;
+    }
   };
 
   const handleNextQuestion = () => {
