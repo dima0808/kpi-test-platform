@@ -5,9 +5,11 @@ import create from '../assets/icons/create-tests.svg';
 import importImg from '../assets/icons/import.svg';
 import exportImg from '../assets/icons/export.svg';
 import remove from '../assets/icons/remove.svg';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderDropdownMenu = ({ deleteSelectedTests }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const dropdownRef = useRef(null);
 
@@ -53,7 +55,11 @@ const HeaderDropdownMenu = ({ deleteSelectedTests }) => {
       </button>
       {isMenuOpen && (
         <div className="dropdown__menu header-menu">
-          <div className="dropdown__item">
+          <div
+            onClick={() => {
+              navigate('/create-test');
+            }}
+            className="dropdown__item">
             <img src={create} alt="info" />
             Create
           </div>
