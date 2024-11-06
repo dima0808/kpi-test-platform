@@ -34,7 +34,7 @@ public class ResponseEntry {
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Answer> answers;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(nullable = false)
   private TestSession testSession;
 }

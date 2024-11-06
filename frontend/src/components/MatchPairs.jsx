@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function MatchPairs({ options, answers }) {
-  const [matchedAnswers, setMatchedAnswers] = useState(Array(options.length).fill(''));
-  const fieldsRef = useRef([]);
-  const namesRef = useRef([]);
-  const answersRef = useRef([]);
+function MatchPairs({ answers, setSelectedAnswers }) {
+
+  const leftOptions = [...new Set(answers.map(answer => answer.leftOption))];
+  const rightOptions = [...new Set(answers.map(answer => answer.rightOption))];
+
+  const [matchedAnswers, setMatchedAnswers] = useState(Array(leftOptions.length).fill(''));
+  const chosenRightOptionsRef = useRef([]);
+  const rightOptionsRef = useRef([]);
+  const leftOptionsRef = useRef([]);
 
   const handleDragStart = (event, text) => {
     event.dataTransfer.setData('text/plain', text);
@@ -25,10 +29,21 @@ function MatchPairs({ options, answers }) {
   };
 
   useEffect(() => {
-    fieldsRef.current.forEach((ref) => resizeText(ref));
-    namesRef.current.forEach((ref) => resizeText(ref));
-    answersRef.current.forEach((ref) => resizeText(ref));
-  }, [matchedAnswers]);
+    chosenRightOptionsRef.current.forEach((ref) => resizeText(ref));
+    leftOptionsRef.current.forEach((ref) => resizeText(ref));
+    rightOptionsRef.current.forEach((ref) => resizeText(ref));
+    setSelectedAnswers(() => {
+      const newSelectedAnswers = [];
+      matchedAnswers.forEach((selectedRightOption, index) => {
+        if (selectedRightOption !== '') {
+          const answer = answers.find((answer) =>
+            answer.leftOption === leftOptions[index] && answer.rightOption === selectedRightOption)
+          newSelectedAnswers.push(answer.id);
+        }
+      });
+      return newSelectedAnswers;
+    });
+  }, [answers, matchedAnswers, setSelectedAnswers]);
 
   const resizeText = (element) => {
     if (!element) return;
@@ -36,10 +51,8 @@ function MatchPairs({ options, answers }) {
     let fontSize = 20;
     element.style.fontSize = `${fontSize}px`;
 
-    while (
-      (element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth) &&
-      fontSize > 10
-    ) {
+    while ((element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth) &&
+    fontSize > 10) {
       fontSize -= 1;
       element.style.fontSize = `${fontSize}px`;
     }
@@ -48,15 +61,15 @@ function MatchPairs({ options, answers }) {
   return (
     <div className="match-pairs">
       <div className="match__container">
-        {options.map((name, index) => (
+        {leftOptions.map((left, index) => (
           <div className="match__question" key={index}>
-            <div className="match__name" ref={(el) => (namesRef.current[index] = el)}>
-              {name}
+            <div className="match__name" ref={(el) => (leftOptionsRef.current[index] = el)}>
+              {left}
             </div>
             <div className="match__between"></div>
             <div
               className={`match__field ${matchedAnswers[index] ? 'filled' : ''}`}
-              ref={(el) => (fieldsRef.current[index] = el)}
+              ref={(el) => (chosenRightOptionsRef.current[index] = el)}
               onDrop={(e) => handleDrop(e, index)}
               onDragOver={handleDragOver}>
               {matchedAnswers[index]}
@@ -65,14 +78,14 @@ function MatchPairs({ options, answers }) {
         ))}
       </div>
       <div className="match__list--answer">
-        {answers.map((answer, index) => (
+        {rightOptions.map((right, index) => (
           <div
             className="match__answer filled"
             draggable
             key={index}
-            onDragStart={(e) => handleDragStart(e, answer)}
-            ref={(el) => (answersRef.current[index] = el)}>
-            {answer}
+            onDragStart={(e) => handleDragStart(e, right)}
+            ref={(el) => (rightOptionsRef.current[index] = el)}>
+            {right}
           </div>
         ))}
       </div>

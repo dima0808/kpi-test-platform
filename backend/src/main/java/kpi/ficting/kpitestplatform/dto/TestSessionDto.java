@@ -13,6 +13,6 @@ public class TestSessionDto {
 
   private String studentGroup;
   private String studentName;
-
-  private String testId;
+  private Boolean isFinished;
+  private Integer currentQuestionIndex;
 }
