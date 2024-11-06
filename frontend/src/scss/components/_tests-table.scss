@@ -1,0 +1,29 @@
+.tests {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  &__tools {
+    padding-top: 10px;
+    display: flex;
+    gap: 9px;
+  }
+  &__slogan {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__title {
+    font-size: 62px;
+    font-weight: 500;
+  }
+}
+
+.tests-table {
+  margin-top: 122px;
+  width: 1044px;
+}
