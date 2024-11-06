@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 
 function TestReview() {
-
   return (
-    <div>
-      <h1>Test Finished</h1>
+    <div className="container__center">
+      <div className="finished">
+        <h1>Test have been completed!</h1>
+      </div>
     </div>
   );
 }

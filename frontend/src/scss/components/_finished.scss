@@ -1,0 +1,12 @@
+.finished {
+  padding: 85px 107px;
+  background-color: $white;
+  max-width: 800px;
+  width: 100%;
+  border-radius: 26px;
+
+  h1 {
+    padding-bottom: 10px;
+    border-bottom: 2px solid $color-table;
+  }
+}

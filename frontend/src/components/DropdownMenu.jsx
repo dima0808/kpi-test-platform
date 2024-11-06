@@ -11,7 +11,7 @@ const DropdownMenu = ({ id, onDelete }) => {
   const dropdownRef = useRef(null);
 
   const handleInfo = () => {
-    window.open(`/${id}`, '_blank');
+    window.open(`tests/${id}`, '_blank');
     setIsMenuOpen(false);
   };
 

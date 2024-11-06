@@ -89,7 +89,9 @@
 .timer__count {
   font-size: 32px;
   font-weight: 700;
-  padding: 8px 18px;
+  padding-block: 8px;
+  width: 135px;
+  text-align: center;
   border: 2px solid $black;
   border-radius: 10px;
 }
@@ -97,8 +99,4 @@
 .timer__red {
   color: $red-crl;
   border: 2px solid $red-crl;
-}
-
-.brbrbr {
-  height: 313px;
 }
