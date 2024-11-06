@@ -39,4 +39,7 @@ public class Test {
 
   @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
   private List<Question> questions;
+
+  @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+  private List<Sample> samples;
 }

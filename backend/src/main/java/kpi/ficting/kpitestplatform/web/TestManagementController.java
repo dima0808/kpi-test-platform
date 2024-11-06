@@ -3,12 +3,16 @@ package kpi.ficting.kpitestplatform.web;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import kpi.ficting.kpitestplatform.dto.QuestionListDto;
+import kpi.ficting.kpitestplatform.dto.SampleListDto;
 import kpi.ficting.kpitestplatform.dto.TestDto;
 import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.dto.TestListInfo;
 import kpi.ficting.kpitestplatform.service.QuestionService;
+import kpi.ficting.kpitestplatform.service.SampleService;
 import kpi.ficting.kpitestplatform.service.TestService;
+import kpi.ficting.kpitestplatform.service.mapper.QuestionMapper;
 import kpi.ficting.kpitestplatform.service.mapper.TestMapper;
+import kpi.ficting.kpitestplatform.service.mapper.impl.SampleMapperImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestManagementController {
 
-  private final QuestionService questionService;
   private final TestService testService;
   private final TestMapper testMapper;
+
+  private final QuestionService questionService;
+  private final QuestionMapper questionMapper;
+
+  private final SampleService sampleService;
+  private final SampleMapperImpl sampleMapper;
 
   @GetMapping
   public ResponseEntity<TestListInfo> getAllTests() {
@@ -43,7 +52,12 @@ public class TestManagementController {
   @GetMapping("{testId}/questions")
   public ResponseEntity<QuestionListDto> getQuestionsByTestId(@PathVariable UUID testId) {
     return ResponseEntity.ok(
-        testMapper.toQuestionDtoList(questionService.findByTestId(testId), true));
+        questionMapper.toQuestionListDto(questionService.findByTestId(testId), true));
+  }
+
+  @GetMapping("{testId}/samples")
+  public ResponseEntity<SampleListDto> getSamplesByTestId(@PathVariable UUID testId) {
+    return ResponseEntity.ok(sampleMapper.toSampleListDto(sampleService.findByTestId(testId)));
   }
 
   @PostMapping

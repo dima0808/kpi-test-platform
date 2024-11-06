@@ -6,9 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,20 +19,20 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-public class ResponseEntry {
+public class Sample {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private Integer points;
+
+  private Integer questionsCount;
+
   @ManyToOne
   @JoinColumn(nullable = false)
-  private Question question;
-
-  @ManyToMany(fetch = FetchType.EAGER)
-  private List<Answer> answers;
+  private Collection collection;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false)
-  private TestSession testSession;
+  private Test test;
 }

@@ -2,6 +2,7 @@ package kpi.ficting.kpitestplatform.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import kpi.ficting.kpitestplatform.validation.ValidQuestionType;
@@ -16,9 +17,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QuestionDto {
 
+  private Long id;
+
   @Size(min = 3, max = 250, message = "Question must be between 3 and 250 characters")
   private String content;
 
+  @NotNull(message = "Points is mandatory")
   @Min(value = 1, message = "Question points must be greater than 0")
   private Integer points;
 

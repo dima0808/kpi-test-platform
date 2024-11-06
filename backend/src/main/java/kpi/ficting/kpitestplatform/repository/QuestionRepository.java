@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
   List<Question> findByTestId(UUID testId);
+
+  List<Question> findByCollectionName(String collectionName);
 }

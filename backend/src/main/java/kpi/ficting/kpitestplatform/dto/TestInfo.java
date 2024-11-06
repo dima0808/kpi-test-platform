@@ -23,6 +23,7 @@ public class TestInfo {
   private Integer minutesToComplete;
 
   private Integer maxScore;
+  private Integer questionsCount;
 
   private Integer startedSessions;
   private Integer finishedSessions;

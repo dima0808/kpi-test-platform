@@ -1,4 +1,4 @@
-package kpi.ficting.kpitestplatform.common;
+package kpi.ficting.kpitestplatform.dto.websocket;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
