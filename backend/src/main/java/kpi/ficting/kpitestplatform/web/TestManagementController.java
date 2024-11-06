@@ -1,12 +1,16 @@
 package kpi.ficting.kpitestplatform.web;
 
+import static kpi.ficting.kpitestplatform.util.CsvGeneratorUtils.generateCsv;
+
 import jakarta.validation.Valid;
 import java.util.UUID;
+import kpi.ficting.kpitestplatform.domain.Test;
 import kpi.ficting.kpitestplatform.dto.QuestionListDto;
 import kpi.ficting.kpitestplatform.dto.SampleListDto;
 import kpi.ficting.kpitestplatform.dto.TestDto;
 import kpi.ficting.kpitestplatform.dto.TestInfo;
 import kpi.ficting.kpitestplatform.dto.TestListInfo;
+import kpi.ficting.kpitestplatform.dto.TestSessionListDto;
 import kpi.ficting.kpitestplatform.service.QuestionService;
 import kpi.ficting.kpitestplatform.service.SampleService;
 import kpi.ficting.kpitestplatform.service.TestService;
@@ -16,7 +20,9 @@ import kpi.ficting.kpitestplatform.service.mapper.TestMapper;
 import kpi.ficting.kpitestplatform.service.mapper.TestSessionMapper;
 import kpi.ficting.kpitestplatform.service.mapper.impl.SampleMapperImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,6 +84,18 @@ public class TestManagementController {
           testSessionMapper.toTestSessionDto(testSessionService.findByTestIdAndCredentials(
               testId, credentials, true), true, false));
     }
+  }
+
+  @GetMapping("{testId}/finishedSessions/csv")
+  public ResponseEntity<byte[]> getFinishedSessionsByTestIdToCsv(@PathVariable UUID testId) {
+    Test test = testService.findById(testId);
+    TestSessionListDto testSessionListDto = testSessionMapper.toTestSessionListDto(
+        testSessionService.findByTestId(testId, true), false);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    headers.setContentDispositionFormData("attachment", "sessions_" + test.getName() + ".csv");
+    byte[] csvBytes = generateCsv(testSessionListDto).getBytes();
+    return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
   }
 
   @PostMapping

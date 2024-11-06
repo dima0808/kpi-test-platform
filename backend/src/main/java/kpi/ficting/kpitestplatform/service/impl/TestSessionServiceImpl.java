@@ -2,7 +2,6 @@ package kpi.ficting.kpitestplatform.service.impl;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,9 +83,7 @@ public class TestSessionServiceImpl implements TestSessionService {
     Collections.shuffle(responses);
     testSession.setResponses(responses);
     testSession.setTest(test);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    String formattedNow = LocalDateTime.now().format(formatter);
-    testSession.setStartedAt(LocalDateTime.parse(formattedNow, formatter));
+    testSession.setStartedAt(LocalDateTime.now());
     testSession.setCurrentQuestionIndex(0);
     return testSessionRepository.save(testSession);
   }
@@ -120,9 +117,7 @@ public class TestSessionServiceImpl implements TestSessionService {
   @Transactional
   public TestSession finishTestSession(UUID testId, String credentials) {
     TestSession testSession = findByTestIdAndCredentials(testId, credentials);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    String formattedNow = LocalDateTime.now().format(formatter);
-    testSession.setFinishedAt(LocalDateTime.parse(formattedNow, formatter)); // todo: not always for some reason
+    testSession.setFinishedAt(LocalDateTime.now()); // todo: not always for some reason
     System.out.println("Test session finished: " + testSession.getFinishedAt());
     return testSessionRepository.save(testSession);
   }

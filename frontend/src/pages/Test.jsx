@@ -32,6 +32,7 @@ function Test() {
       case 'START':
         setIsStarted(true);
         setTestSession(testSession);
+        enterFullscreen();
         handleNextQuestion();
         break;
       case 'SAVE_ANSWER':
@@ -134,6 +135,19 @@ function Test() {
     Cookies.set('name', studentName);
   };
 
+  const enterFullscreen = () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE/Edge
+      elem.msRequestFullscreen();
+    }
+  };
+
   window.onbeforeunload = function (e) {
     if (isStarted) {
       e = e || window.event;
@@ -144,6 +158,7 @@ function Test() {
       }
       // For Safari
       if (window.confirm(confirmationMessage)) {
+        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley", '_blank').focus();
         handleFinishTest();
       }
       return confirmationMessage;

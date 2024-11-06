@@ -54,6 +54,7 @@ function TestCreation() {
       questions: questions.map(({ id, ...q }) => q)
     };
 
+    console.log(testData);
     const token = Cookies.get('token');
 
     try {

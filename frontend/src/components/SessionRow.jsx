@@ -5,6 +5,8 @@ import DropdownMenu from './DropdownMenu';
 
 import borderBetween from '../assets/icons/brd-between-small.svg';
 import people from '../assets/icons/people.svg';
+import Cookies from "js-cookie";
+import {getFinishedSessionsByTestIdInCsv} from "../http";
 
 const SessionRow = ({
   id,

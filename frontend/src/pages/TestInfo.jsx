@@ -1,25 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { getTestById } from '../http';
+import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../http';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 function TestInfo() {
   const { id } = useParams();
   const [testData, setTestData] = useState(null);
+  const [testFinishedSessions, setTestFinishedSessions] = useState([]);
   const testLink = `http://localhost:3000/${id}`;
 
   useEffect(() => {
-    async function fetchData() {
-      const token = Cookies.get('token');
-      try {
-        const data = await getTestById(id, token);
-        setTestData(data);
-      } catch (error) {
-        console.error('Error fetching test data:', error);
-      }
-    }
-    fetchData();
+    const token = Cookies.get('token');
+    getTestById(id, token)
+      .then(setTestData)
+      .catch((error) => console.error('Error fetching test data: ', error));
+    getFinishedSessionsByTestId(id, token)
+      .then((data) => setTestFinishedSessions(data.sessions))
+      .catch((error) => console.error('Error fetching finished sessions: ', error));
   }, [id]);
+
+  function calculateTimeDifference(startedAt, finishedAt) {
+    const startDate = new Date(startedAt.split('.').reverse().join('-'));
+    const endDate = new Date(finishedAt.split('.').reverse().join('-'));
+    const diffMs = endDate - startDate;
+
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+  }
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(testLink);
@@ -50,7 +60,12 @@ function TestInfo() {
         <p>Finished Sessions: {testData.finishedSessions}</p>
       </div>
 
-      <button className="test-info__import-button">Export</button>
+      <button
+        onClick={() => getFinishedSessionsByTestIdInCsv(testData.name, id, Cookies.get('token'))}
+        className="test-info__import-button"
+      >
+        Export
+      </button>
       <table className="test-info__table">
         <thead>
           <tr>
@@ -62,12 +77,12 @@ function TestInfo() {
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <tr key={idx}>
-              <td>Group A</td>
-              <td>John Doe</td>
-              <td>27</td>
-              <td>35 mins</td>
+          {testFinishedSessions.map((session, index) => (
+            <tr key={index}>
+              <td>{session.studentGroup}</td>
+              <td>{session.studentName}</td>
+              <td>{session.mark}</td>
+              <td>{calculateTimeDifference(session.startedAt, session.finishedAt)}</td>
               <td>
                 <button className="test-info__details-button">Details</button>
               </td>

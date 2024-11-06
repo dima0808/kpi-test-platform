@@ -98,13 +98,43 @@ export async function deleteTestById(id, token) {
       Authorization: `Bearer ${token}`,
     },
   });
-
   const text = await response.text();
   const resData = text ? JSON.parse(text) : {};
-
   if (!response.ok) {
     throw new Error(resData.message);
   }
 
   return resData;
+}
+
+export async function getFinishedSessionsByTestId(id, token) {
+  const response = await fetch(`http://${IP}/api/v1/admin/tests/${id}/finishedSessions`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+  return resData;
+}
+
+export async function getFinishedSessionsByTestIdInCsv(name, id, token) {
+  const response = await fetch(`http://${IP}/api/v1/admin/tests/${id}/finishedSessions/csv`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (response.ok) {
+    const blob = await response.blob();
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `${name}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else {
+    console.error('Failed to download file');
+  }
 }
