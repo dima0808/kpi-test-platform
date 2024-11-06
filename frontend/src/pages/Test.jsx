@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getTestById } from '../http';
-import {IP} from "../constraints";
-import {Client} from "@stomp/stompjs";
-import TestPreview from "../components/TestPreview";
-import Question from "../components/Question";
-import Cookies from "js-cookie";
-import TestReview from "../components/TestReview";
+import { IP } from '../constraints';
+import { Client } from '@stomp/stompjs';
+import TestPreview from '../components/TestPreview';
+import Question from '../components/Question';
+import Cookies from 'js-cookie';
+import TestReview from '../components/TestReview';
 
 function Test() {
   const { id } = useParams();
@@ -22,6 +22,8 @@ function Test() {
 
   const [testSession, setTestSession] = useState(null);
   const [question, setQuestion] = useState(null);
+
+  const [message, setMessage] = useState(null);
 
   const onTestSessionMessageReceived = (message) => {
     const { type, content, question, testSession } = JSON.parse(message.body);
@@ -50,12 +52,13 @@ function Test() {
       default:
         break;
     }
-  }
+  };
 
   const onErrorMessageReceived = (message) => {
     const data = JSON.parse(message.body);
     console.log(data.message);
-  }
+    setMessage(data.message);
+  };
 
   useEffect(() => {
     getTestById(id)
@@ -81,15 +84,19 @@ function Test() {
           setIsConnected(false);
         };
       })
-      .catch((error) => setError({ message: error.message || "An error occurred" }));
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
   }, [id]);
 
   useEffect(() => {
     if (client && isConnected && credentials) {
-      const errorSubscription =
-        client.subscribe(`/user/${credentials}/queue/errors`, onErrorMessageReceived);
-      const testSessionSubscription =
-        client.subscribe(`/user/${credentials}/queue/testSession`, onTestSessionMessageReceived);
+      const errorSubscription = client.subscribe(
+        `/user/${credentials}/queue/errors`,
+        onErrorMessageReceived,
+      );
+      const testSessionSubscription = client.subscribe(
+        `/user/${credentials}/queue/testSession`,
+        onTestSessionMessageReceived,
+      );
       const studentGroup = credentials.split(':')[0];
       const studentName = credentials.split(':')[1];
       try {
@@ -123,7 +130,7 @@ function Test() {
     setCredentials(`${studentGroup}:${studentName}`);
     Cookies.set('group', studentGroup);
     Cookies.set('name', studentName);
-  }
+  };
 
   const handleNextQuestion = () => {
     if (!client || !isConnected) {
@@ -139,7 +146,7 @@ function Test() {
     } catch (error) {
       console.log('Error getting next question (no connection)');
     }
-  }
+  };
 
   const handleSaveAnswer = (answers) => {
     if (!client || !isConnected) {
@@ -158,7 +165,7 @@ function Test() {
     } catch (error) {
       console.log('Error saving answer (no connection)');
     }
-  }
+  };
 
   const handleFinishTest = () => {
     if (!client || !isConnected) {
@@ -174,7 +181,7 @@ function Test() {
     } catch (error) {
       console.log('Error finishing test (no connection)');
     }
-  }
+  };
 
   if (error) {
     return <div>{error.message}</div>; // handle error in a better way
@@ -183,12 +190,7 @@ function Test() {
   }
 
   if (!isStarted && !isFinished) {
-    return (
-      <TestPreview
-        test={test}
-        handleStartTest={handleStartTest}
-      />
-    );
+    return <TestPreview message={message} test={test} handleStartTest={handleStartTest} />;
   }
 
   if (isStarted && !isFinished) {
@@ -204,9 +206,7 @@ function Test() {
   }
 
   if (!isStarted && isFinished) {
-    return (
-      <TestReview />
-    );
+    return <TestReview />;
   }
 }
 

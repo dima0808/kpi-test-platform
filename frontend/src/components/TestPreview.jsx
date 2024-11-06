@@ -1,26 +1,43 @@
-import duration from "../assets/icons/duration.svg";
-import question from "../assets/icons/question.svg";
-import score from "../assets/icons/score.svg";
-import group from "../assets/icons/group.svg";
-import human from "../assets/icons/human.svg";
-import React, {useEffect, useRef} from "react";
-import Cookies from "js-cookie";
+import React, { useRef, useState } from 'react';
+import question from '../assets/icons/question.svg';
+import score from '../assets/icons/score.svg';
+import group from '../assets/icons/group.svg';
+import human from '../assets/icons/human.svg';
+import duration from '../assets/icons/duration.svg';
 
-function TestPreview({ test, handleStartTest }) {
+function TestPreview({ test, handleStartTest, message }) {
+  const studentGroupRef = useRef(null);
+  const studentNameRef = useRef(null);
+  const [errors, setErrors] = useState({});
 
-  const studentGroupRef = useRef();
-  const studentNameRef = useRef();
+  const validateForm = () => {
+    const group = studentGroupRef.current?.value;
+    const name = studentNameRef.current?.value;
+    const newErrors = {};
 
-  useEffect(() => {
-    const group = Cookies.get('group');
-    const name = Cookies.get('name');
-    if (group && studentGroupRef.current) {
-      studentGroupRef.current.value = group;
+    if (!group) {
+      newErrors.group = 'Group is required.';
     }
-    if (name && studentNameRef.current) {
-      studentNameRef.current.value = name;
+    if (!name) {
+      newErrors.name = 'Full name is required.';
     }
-  }, [test]);
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      const group = studentGroupRef.current?.value;
+      const name = studentNameRef.current?.value;
+      handleStartTest(group, name);
+    }
+  };
+
+  const handleInputChange = (field) => {
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: '' }));
+  };
 
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / 1440);
@@ -35,43 +52,48 @@ function TestPreview({ test, handleStartTest }) {
         <div className="test__info">
           <ul className="info__list">
             <li className="info__duration">
-              <img src={duration} alt="duration"/>
+              <img src={duration} alt="duration" />
               <span>{formatDuration(test.minutesToComplete)}</span>
             </li>
             <li className="info__question">
-              <img src={question} alt="question"/>
+              <img src={question} alt="question" />
               <span>{test.questionsCount} Questions</span>
             </li>
             <li className="info__score">
-              <img src={score} alt="score"/>
+              <img src={score} alt="score" />
               <span>{test.maxScore} points</span>
             </li>
           </ul>
         </div>
         <h1 className="test__name">{test.name}</h1>
-        <form className="test__form">
+        <form className="test__form" onSubmit={handleSubmit}>
           <div className="test__fields">
             <div className="test__field">
-              <img src={group} alt="group"/>
-              <input ref={studentGroupRef} type="text" placeholder="Group"/>
+              <img src={group} alt="group" />
+              <input
+                ref={studentGroupRef}
+                type="text"
+                placeholder="Group: IO-25"
+                className={errors.group ? 'error-border' : ''}
+                onChange={() => handleInputChange('group')}
+              />
             </div>
             <div className="test__field">
-              <img src={human} alt="human" className="test__numan"/>
-              <input ref={studentNameRef} type="text" placeholder="Full Name"/>
+              <img src={human} alt="human" className="test__numan" />
+              <input
+                ref={studentNameRef}
+                type="text"
+                placeholder="Full Name: Ivan Ivanov"
+                className={errors.name ? 'error-border' : ''}
+                onChange={() => handleInputChange('name')}
+              />
             </div>
           </div>
-          <button
-            onClick={(event) => {
-              event.preventDefault();
-              const group = studentGroupRef.current?.value;
-              const name = studentNameRef.current?.value;
-              handleStartTest(group, name);
-            }}
-            className="test__button"
-          >
+          <button type="submit" className="test__button">
             Take a test
           </button>
         </form>
+        {message && <div className="test__message">Користувач під цим ім'ям вже проходить</div>}
       </div>
     </div>
   );

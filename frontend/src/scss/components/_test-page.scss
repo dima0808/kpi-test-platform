@@ -3,6 +3,13 @@
   background-color: $white;
   border-radius: 30px;
 
+  &__message {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    color: $red-crl;
+  }
+
   &__form {
     min-width: 665px;
     margin-top: 12px;
@@ -90,6 +97,19 @@
     &:hover {
       opacity: 0.8;
     }
+  }
+
+  .error-border {
+    border: 2px solid #ff6b6b;
+  }
+
+  .error-message {
+    color: #ff6b6b;
+    font-size: 12px;
+    margin-top: 5px;
+    position: absolute;
+    bottom: -20px;
+    left: 0;
   }
 }
 

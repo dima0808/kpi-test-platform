@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function QuestionForm({ question, onChange }) {
   const { content, points, type, answers } = question;
+  const [errors, setErrors] = useState({});
 
   const handleQuestionChange = (key, value) => {
     onChange({ ...question, [key]: value });
@@ -23,6 +24,18 @@ function QuestionForm({ question, onChange }) {
     onChange({ ...question, answers: updatedAnswers });
   };
 
+  const validateField = (key, value) => {
+    let error = '';
+    if (key === 'content' && !value) {
+      error = 'Question content cannot be empty.';
+    } else if (key === 'points' && (!value || value <= 0)) {
+      error = 'Points must be greater than 0.';
+    } else if (key === 'answer' && value.length < 3) {
+      error = 'Answer text must be at least 3 characters.';
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: error }));
+  };
+
   return (
     <div className="question-form">
       <label>
@@ -31,16 +44,22 @@ function QuestionForm({ question, onChange }) {
           type="text"
           value={content}
           onChange={(e) => handleQuestionChange('content', e.target.value)}
+          onBlur={(e) => validateField('content', e.target.value)}
+          className={errors.content ? 'error-border' : ''}
         />
+        {errors.content && <div className="error-message">{errors.content}</div>}
       </label>
       <label>
         Points:
         <input
           type="number"
           value={points}
-          min={1} // Prevent points being set to 0
+          min={1}
           onChange={(e) => handleQuestionChange('points', e.target.value)}
+          onBlur={(e) => validateField('points', e.target.value)}
+          className={errors.points ? 'error-border' : ''}
         />
+        {errors.points && <div className="error-message">{errors.points}</div>}
       </label>
       <label>
         Question Type:
@@ -60,13 +79,23 @@ function QuestionForm({ question, onChange }) {
                 placeholder="Left Option"
                 value={answer.leftOption}
                 onChange={(e) => handleAnswerChange(index, 'leftOption', e.target.value)}
+                onBlur={(e) => validateField('answer', e.target.value)}
+                className={errors[`answer-${index}-left`] ? 'error-border' : ''}
               />
+              {errors[`answer-${index}-left`] && (
+                <div className="error-message">{errors[`answer-${index}-left`]}</div>
+              )}
               <input
                 type="text"
                 placeholder="Right Option"
                 value={answer.rightOption}
                 onChange={(e) => handleAnswerChange(index, 'rightOption', e.target.value)}
+                onBlur={(e) => validateField('answer', e.target.value)}
+                className={errors[`answer-${index}-right`] ? 'error-border' : ''}
               />
+              {errors[`answer-${index}-right`] && (
+                <div className="error-message">{errors[`answer-${index}-right`]}</div>
+              )}
             </>
           ) : (
             <>
@@ -75,7 +104,12 @@ function QuestionForm({ question, onChange }) {
                 placeholder="Answer Text"
                 value={answer.content}
                 onChange={(e) => handleAnswerChange(index, 'content', e.target.value)}
+                onBlur={(e) => validateField('answer', e.target.value)}
+                className={errors[`answer-${index}`] ? 'error-border' : ''}
               />
+              {errors[`answer-${index}`] && (
+                <div className="error-message">{errors[`answer-${index}`]}</div>
+              )}
               <label>
                 <input
                   type={type === 'single_choice' ? 'radio' : 'checkbox'}

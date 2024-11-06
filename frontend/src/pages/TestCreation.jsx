@@ -3,43 +3,14 @@ import QuestionForm from '../components/QuestionForm';
 import { createTest } from '../http';
 import Cookies from 'js-cookie';
 
-function TestCreation({ token }) {
+function TestCreation() {
   const [testName, setTestName] = useState('');
   const [openDate, setOpenDate] = useState('');
   const [deadline, setDeadline] = useState('');
   const [minutesToComplete, setMinutesToComplete] = useState(10);
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(null);
-
-  const validateForm = () => {
-    if (!testName || !openDate || !deadline) {
-      setError('Test name, open date, and deadline cannot be empty.');
-      return false;
-    }
-
-    for (const question of questions) {
-      if (!question.content) {
-        setError(`Question content cannot be empty.`);
-        return false;
-      }
-      if (question.points <= 0) {
-        setError(`Points for a question must be greater than 0.`);
-        return false;
-      }
-      if (question.type === 'single_choice' || question.type === 'multiple_choices') {
-        for (const answer of question.answers) {
-          if (answer.content.length < 3) {
-            setError(`Answer text must be at least 3 characters.`);
-            return false;
-          }
-        }
-      }
-    }
-
-    setError(null);
-    return true;
-  };
 
   const addQuestion = () => {
     setQuestions([
@@ -56,9 +27,23 @@ function TestCreation({ token }) {
     setQuestions((prevQuestions) => prevQuestions.filter((q) => q.id !== id));
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
+  const validateField = (key, value) => {
+    let error = '';
+    const dateTimeRegex = /^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/;
 
+    if (key === 'testName' && !value) {
+      error = 'Test name cannot be empty.';
+    } else if (key === 'openDate' && (!value || !dateTimeRegex.test(value))) {
+      error = 'Open date must be in the format DD.MM.YYYY HH:MM.';
+    } else if (key === 'deadline' && (!value || !dateTimeRegex.test(value))) {
+      error = 'Deadline must be in the format DD.MM.YYYY HH:MM.';
+    } else if (key === 'minutesToComplete' && (!value || value <= 0)) {
+      error = 'Minutes to complete must be greater than 0.';
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: error }));
+  };
+
+  const handleSubmit = async () => {
     const testData = {
       name: testName,
       openDate,
@@ -81,18 +66,23 @@ function TestCreation({ token }) {
       setSuccess('Test created successfully!');
       console.log('Response:', response);
     } catch (error) {
-      setError(error.message);
+      setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
     }
   };
 
   return (
     <div className="test-creation">
       <h2>Create a Test</h2>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
       <label>
         Name:
-        <input type="text" value={testName} onChange={(e) => setTestName(e.target.value)} />
+        <input
+          type="text"
+          value={testName}
+          onChange={(e) => setTestName(e.target.value)}
+          onBlur={(e) => validateField('testName', e.target.value)}
+          className={errors.testName ? 'error-border' : ''}
+        />
+        {errors.testName && <div className="error-message">{errors.testName}</div>}
       </label>
       <label>
         Open Date:
@@ -101,7 +91,10 @@ function TestCreation({ token }) {
           placeholder="e.g., 11.11.2024 23:35"
           value={openDate}
           onChange={(e) => setOpenDate(e.target.value)}
+          onBlur={(e) => validateField('openDate', e.target.value)}
+          className={errors.openDate ? 'error-border' : ''}
         />
+        {errors.openDate && <div className="error-message">{errors.openDate}</div>}
       </label>
       <label>
         Deadline:
@@ -110,7 +103,10 @@ function TestCreation({ token }) {
           placeholder="e.g., 11.11.2024 23:59"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
+          onBlur={(e) => validateField('deadline', e.target.value)}
+          className={errors.deadline ? 'error-border' : ''}
         />
+        {errors.deadline && <div className="error-message">{errors.deadline}</div>}
       </label>
       <label>
         Minutes to Complete:
@@ -118,22 +114,35 @@ function TestCreation({ token }) {
           type="number"
           value={minutesToComplete}
           onChange={(e) => setMinutesToComplete(e.target.value)}
+          onBlur={(e) => validateField('minutesToComplete', e.target.value)}
+          className={errors.minutesToComplete ? 'error-border' : ''}
         />
+        {errors.minutesToComplete && (
+          <div className="error-message">{errors.minutesToComplete}</div>
+        )}
       </label>
 
-      <button onClick={addQuestion}>Add Question</button>
+      <div className="questions-container">
+        {questions.map((question) => (
+          <div key={question.id} className="question">
+            <QuestionForm
+              question={question}
+              onChange={(updatedQuestion) => handleQuestionChange(question.id, updatedQuestion)}
+            />
+            <button className="delete-button" onClick={() => deleteQuestion(question.id)}>
+              Delete Question
+            </button>
+          </div>
+        ))}
+      </div>
 
-      {questions.map((question) => (
-        <div key={question.id}>
-          <QuestionForm
-            question={question}
-            onChange={(updatedQuestion) => handleQuestionChange(question.id, updatedQuestion)}
-          />
-          <button onClick={() => deleteQuestion(question.id)}>Delete Question</button>
-        </div>
-      ))}
+      <div className="buttons-container">
+        <button onClick={addQuestion}>Add Question</button>
+        <button onClick={handleSubmit}>Submit Test</button>
+      </div>
 
-      <button onClick={handleSubmit}>Submit Test</button>
+      {errors.submit && <p className="error">{errors.submit}</p>}
+      {success && <p className="success">{success}</p>}
     </div>
   );
 }
