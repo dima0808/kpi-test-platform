@@ -12,7 +12,7 @@ function MatchPairsReview({ answers, selectedAnswer }) {
             <div className="match__between"></div>
             <div className="match__field filled">
               {answers.find((answer) =>
-                answer.leftOption === left && selectedAnswer.includes(answer.id)).rightOption}
+                answer.leftOption === left && selectedAnswer.includes(answer.id))?.rightOption}
             </div>
           </div>
         ))}

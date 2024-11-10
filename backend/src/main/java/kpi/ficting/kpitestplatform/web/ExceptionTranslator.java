@@ -80,6 +80,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
     return ResponseEntity.status(BAD_REQUEST)
-        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors(), request));
+        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getAllErrors(), request));
   }
 }
