@@ -1,35 +1,83 @@
 import React, { useState } from 'react';
-import QuestionForm from '../components/QuestionForm';
-import { createTest } from '../http';
-import Cookies from 'js-cookie';
+import { createTest } from '../utils/http';
+import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
 
 function TestCreation() {
-  const [testName, setTestName] = useState('');
-  const [openDate, setOpenDate] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [minutesToComplete, setMinutesToComplete] = useState(10);
-  const [questions, setQuestions] = useState([]);
+  const [test, setTest] = useState({
+    name: '',
+    openDate: '',
+    deadline: '',
+    minutesToComplete: 0,
+    questions: [],
+    samples: []
+  });
   const [errors, setErrors] = useState({});
-
   const navigate = useNavigate();
 
-  const addQuestion = () => {
-    setQuestions([
-      ...questions,
-      { id: questions.length, content: '', points: 1, type: 'single_choice', answers: [] },
-    ]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTest({ ...test, [name]: value });
   };
 
-  const handleQuestionChange = (id, updatedQuestion) => {
-    setQuestions((prevQuestions) => prevQuestions.map((q) => (q.id === id ? updatedQuestion : q)));
+  const handleAddQuestion = () => {
+    setTest({
+      ...test,
+      questions: [
+        ...test.questions,
+        {
+          content: '',
+          points: 0,
+          type: 'multiple_choices',
+          answers: []
+        }
+      ]
+    });
   };
 
-  const deleteQuestion = (id) => {
-    setQuestions((prevQuestions) => prevQuestions.filter((q) => q.id !== id));
+  const handleDeleteQuestion = (index) => {
+    const questions = [...test.questions];
+    questions.splice(index, 1);
+    setTest({ ...test, questions });
   };
 
-  const validateField = (key, value) => {
+  const handleQuestionChange = (index, e) => {
+    const { name, value } = e.target;
+    const questions = [...test.questions];
+    questions[index][name] = value;
+    setTest({ ...test, questions });
+  };
+
+  const handleQuestionTypeChange = (index, e) => {
+    const { value } = e.target;
+    const questions = [...test.questions];
+    const currentType = questions[index].type;
+
+    if (currentType === 'matching' || value === 'matching') {
+      questions[index].answers = [];
+    } else {
+      questions[index].answers = questions[index].answers.map(answer => ({ ...answer, isCorrect: false }));
+    }
+
+    questions[index].type = value;
+    setTest({ ...test, questions });
+  };
+
+  const handleAddAnswer = (questionIndex) => {
+    const questions = [...test.questions];
+    const question = questions[questionIndex];
+    const newAnswer = question.type === 'matching' ? { leftOption: '', rightOption: '' } : { content: '', isCorrect: false };
+    question.answers.push(newAnswer);
+    setTest({ ...test, questions });
+  };
+
+  const handleDeleteAnswer = (questionIndex, answerIndex) => {
+    const questions = [...test.questions];
+    questions[questionIndex].answers.splice(answerIndex, 1);
+    setTest({ ...test, questions });
+  };
+
+  const validateField = (key, value, index1 = -1, index2 = 0) => {
     let error = '';
     const dateTimeRegex = /^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/;
 
@@ -41,103 +89,241 @@ function TestCreation() {
       error = 'Deadline must be in the format DD.MM.YYYY HH:MM.';
     } else if (key === 'minutesToComplete' && (!value || value <= 0)) {
       error = 'Minutes to complete must be greater than 0.';
+    } else if (key === 'question-content' && !value) {
+      error = 'Question content cannot be empty.';
+    } else if (key === 'question-points' && (!value || value <= 0)) {
+      error = 'Points must be greater than 0.';
+    } else if (key === 'question-answer' && value.length < 3) {
+      error = 'Answer text must be at least 3 characters.';
+    } else if (key === 'question-answer-right' && value.length < 1) {
+      error = 'Right option text must be at least 1 character.';
+    } else if (key === 'question-answer-left' && value.length < 1) {
+      error = 'Left option text must be at least 1 character.';
     }
-    setErrors((prevErrors) => ({ ...prevErrors, [key]: error }));
+    setErrors((prevErrors) =>
+      ({ ...prevErrors, [index1 !== -1 ? key + '-' + index1 + '-' + index2 : key]: error })
+    );
+  };
+
+  const handleAnswerChange = (questionIndex, answerIndex, e) => {
+    const { name, value } = e.target;
+    const questions = [...test.questions];
+    const question = questions[questionIndex];
+    if (question.type === 'single_choice' && name === 'isCorrect') {
+      question.answers = question.answers.map((answer, index) => ({
+        ...answer,
+        isCorrect: index === answerIndex
+      }));
+    } else {
+      question.answers[answerIndex][name] = value;
+    }
+    setTest({ ...test, questions });
   };
 
   const handleSubmit = async () => {
-    const testData = {
-      name: testName,
-      openDate,
-      deadline,
-      minutesToComplete,
-      questions: questions.map(({ id, ...q }) => q)
-    };
-
-    console.log(testData);
     const token = Cookies.get('token');
-
-    try {
-      createTest(testData, token).then(() => {
-        navigate('/tests');
+    console.log(test);
+    createTest(test, token).then(() => navigate('/tests'))
+      .catch((error) => {
+        setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
+        console.log(error);
+        console.log("hello");
       });
-    } catch (error) {
-      setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
-    }
   };
 
   return (
     <div className="test-creation">
       <h2>Create a Test</h2>
-      <label>
-        Name:
+      <div>
+        <label>Name:</label>
         <input
           type="text"
-          value={testName}
-          onChange={(e) => setTestName(e.target.value)}
+          name="name"
+          value={test.name}
+          onChange={handleInputChange}
           onBlur={(e) => validateField('testName', e.target.value)}
           className={errors.testName ? 'error-border' : ''}
         />
         {errors.testName && <div className="error-message">{errors.testName}</div>}
-      </label>
-      <label>
-        Open Date:
+      </div>
+      <div>
+        <label>Open Date:</label>
         <input
           type="text"
-          placeholder="e.g., 11.11.2024 23:35"
-          value={openDate}
-          onChange={(e) => setOpenDate(e.target.value)}
+          name="openDate"
+          placeholder="e.g., 11.11.2024 12:35"
+          value={test.openDate}
+          onChange={handleInputChange}
           onBlur={(e) => validateField('openDate', e.target.value)}
           className={errors.openDate ? 'error-border' : ''}
         />
         {errors.openDate && <div className="error-message">{errors.openDate}</div>}
-      </label>
-      <label>
-        Deadline:
+      </div>
+      <div>
+        <label>Deadline:</label>
         <input
           type="text"
-          placeholder="e.g., 11.11.2024 23:59"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)}
+          name="deadline"
+          placeholder="e.g., 11.11.2024 15:35"
+          value={test.deadline}
+          onChange={handleInputChange}
           onBlur={(e) => validateField('deadline', e.target.value)}
           className={errors.deadline ? 'error-border' : ''}
         />
         {errors.deadline && <div className="error-message">{errors.deadline}</div>}
-      </label>
-      <label>
-        Minutes to Complete:
+      </div>
+      <div>
+        <label>Minutes to Complete:</label>
         <input
           type="number"
-          value={minutesToComplete}
-          onChange={(e) => setMinutesToComplete(e.target.value)}
+          name="minutesToComplete"
+          value={test.minutesToComplete}
+          onChange={handleInputChange}
           onBlur={(e) => validateField('minutesToComplete', e.target.value)}
           className={errors.minutesToComplete ? 'error-border' : ''}
         />
-        {errors.minutesToComplete && (
-          <div className="error-message">{errors.minutesToComplete}</div>
-        )}
-      </label>
-
+        {errors.minutesToComplete && <div className="error-message">{errors.minutesToComplete}</div>}
+      </div>
       <div className="questions-container">
-        {questions.map((question) => (
-          <div key={question.id} className="question">
-            <QuestionForm
-              question={question}
-              onChange={(updatedQuestion) => handleQuestionChange(question.id, updatedQuestion)}
-            />
-            <button className="delete-button" onClick={() => deleteQuestion(question.id)}>
+        {test.questions.map((question, qIndex) => (
+          <div className="question" key={qIndex}>
+            <div className="question-form">
+              <div>
+                <label>Question Content:</label>
+                <input
+                  type="text"
+                  name="content"
+                  value={question.content}
+                  onChange={(e) => handleQuestionChange(qIndex, e)}
+                  onBlur={(e) => validateField('question-content', e.target.value, qIndex)}
+                  className={errors[`question-content-${qIndex}`] ? 'error-border' : ''}
+                />
+                {errors[`question-content-${qIndex}-0`] && (
+                  <div className="error-message">{errors[`question-content-${qIndex}-0`]}</div>
+                )}
+              </div>
+              <div>
+                <label>Points:</label>
+                <input
+                  type="number"
+                  name="points"
+                  value={question.points}
+                  onChange={(e) => handleQuestionChange(qIndex, e)}
+                  onBlur={(e) => validateField('question-points', e.target.value, qIndex)}
+                  className={errors[`question-points-${qIndex}`] ? 'error-border' : ''}
+                />
+                {errors[`question-points-${qIndex}-0`] && (
+                  <div className="error-message">{errors[`question-points-${qIndex}-0`]}</div>
+                )}
+              </div>
+              <div>
+                <label>Type:</label>
+                <select name="type" value={question.type} onChange={(e) => handleQuestionTypeChange(qIndex, e)}>
+                  <option value="multiple_choices">Multiple Choices</option>
+                  <option value="single_choice">Single Choice</option>
+                  <option value="matching">Matching</option>
+                </select>
+              </div>
+              <button type="button" onClick={() => handleAddAnswer(qIndex)}>
+                Add Answer
+              </button>
+              {question.answers.map((answer, aIndex) => (
+                <div key={aIndex} className="answer-input">
+                  {question.type === 'matching' ? (
+                    <>
+                      <div>
+                        <label>Left Option:</label>
+                        <input
+                          type="text"
+                          name="leftOption"
+                          value={answer.leftOption}
+                          onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
+                          onBlur={(e) => validateField('question-answer-left', e.target.value, qIndex, aIndex)}
+                          className={errors[`question-answer-left-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        />
+                        {errors[`question-answer-left-${qIndex}-${aIndex}`] && (
+                          <div className="error-message">{errors[`question-answer-left-${qIndex}-${aIndex}`]}</div>
+                        )}
+                      </div>
+                      <div>
+                        <label>Right Option:</label>
+                        <input
+                          type="text"
+                          name="rightOption"
+                          value={answer.rightOption}
+                          onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
+                          onBlur={(e) => validateField('question-answer-right', e.target.value, qIndex, aIndex)}
+                          className={errors[`question-answer-right-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        />
+                        {errors[`question-answer-right-${qIndex}-${aIndex}`] && (
+                          <div className="error-message">{errors[`question-answer-right-${qIndex}-${aIndex}`]}</div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <label>Content:</label>
+                        <input
+                          type="text"
+                          name="content"
+                          value={answer.content}
+                          onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
+                          onBlur={(e) => validateField('question-answer', e.target.value, qIndex, aIndex)}
+                          className={errors[`question-answer-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        />
+                        {errors[`question-answer-${qIndex}-${aIndex}`] && (
+                          <div className="error-message">{errors[`question-answer-${qIndex}-${aIndex}`]}</div>
+                        )}
+                      </div>
+                      <div>
+                        <label>Is Correct:</label>
+                        {question.type === 'single_choice' ? (
+                          <input
+                            type="radio"
+                            name={`isCorrect-${qIndex}`}
+                            checked={answer.isCorrect}
+                            onChange={(e) => handleAnswerChange(qIndex, aIndex, {
+                              target: {
+                                name: 'isCorrect',
+                                value: e.target.checked
+                              }
+                            })}
+                          />
+                        ) : (
+                          <input
+                            type="checkbox"
+                            name="isCorrect"
+                            checked={answer.isCorrect}
+                            onChange={(e) => handleAnswerChange(qIndex, aIndex, {
+                              target: {
+                                name: 'isCorrect',
+                                value: e.target.checked
+                              }
+                            })}
+                          />
+                        )}
+                      </div>
+                    </>
+                  )}
+                  <button type="button" onClick={() => handleDeleteAnswer(qIndex, aIndex)}>Delete Answer</button>
+                </div>
+              ))}
+            </div>
+            <button className="delete-button" onClick={() => handleDeleteQuestion(qIndex)}>
               Delete Question
             </button>
           </div>
         ))}
       </div>
-
       <div className="buttons-container">
-        <button onClick={addQuestion}>Add Question</button>
-        <button onClick={handleSubmit}>Submit Test</button>
+        <button onClick={handleAddQuestion}>Add Question</button>
+        <button onClick={handleSubmit}>Create Test</button>
       </div>
 
-      {errors.submit && <p className="error">{errors.submit}</p>}
+      {errors.submit && errors.submit.split(',').map((error, index) => (
+        <div key={index} className="error-message">{error}</div>
+      ))}
     </div>
   );
 }

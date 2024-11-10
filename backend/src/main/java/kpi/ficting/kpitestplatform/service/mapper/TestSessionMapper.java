@@ -13,6 +13,7 @@ public interface TestSessionMapper {
 
   default TestSession toTestSession(TestSessionDto testSessionDto) {
     return TestSession.builder()
+        .sessionId(testSessionDto.getSessionId())
         .studentGroup(testSessionDto.getStudentGroup())
         .studentName(testSessionDto.getStudentName())
         .build();
@@ -23,15 +24,16 @@ public interface TestSessionMapper {
   }
 
   default TestSessionDto toTestSessionDto(TestSession testSession, boolean includeResponses,
-      boolean includeMark) {
+      boolean isAdmin) {
     return TestSessionDto.builder()
         .studentGroup(testSession.getStudentGroup())
         .studentName(testSession.getStudentName())
         .startedAt(testSession.getStartedAt())
         .finishedAt(testSession.getFinishedAt())
         .currentQuestionIndex(testSession.getCurrentQuestionIndex())
-        .responses(includeResponses ? toResponseEntryDtoList(testSession.getResponses()) : null)
-        .mark((includeMark && testSession.getFinishedAt() != null) ?
+        .responses(includeResponses ?
+            toResponseEntryDtoList(testSession.getResponses(), isAdmin) : null)
+        .mark((isAdmin && testSession.getFinishedAt() != null) ?
             testSession.getResponses().stream()
                 .mapToInt(TestUtils::calculateMark)
                 .sum() : null)
@@ -52,5 +54,5 @@ public interface TestSessionMapper {
         .build();
   }
 
-  List<ResponseEntryDto> toResponseEntryDtoList(List<ResponseEntry> responses);
+  List<ResponseEntryDto> toResponseEntryDtoList(List<ResponseEntry> responses, boolean isAdmin);
 }

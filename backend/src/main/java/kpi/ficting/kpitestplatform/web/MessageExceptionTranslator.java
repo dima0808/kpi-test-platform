@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import kpi.ficting.kpitestplatform.common.CustomErrorResponse;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
 import kpi.ficting.kpitestplatform.service.exception.TestSessionAlreadyExistsException;
+import kpi.ficting.kpitestplatform.service.exception.TestSessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -18,8 +19,8 @@ public class MessageExceptionTranslator {
 
   private final SimpMessagingTemplate messagingTemplate;
 
-  @MessageExceptionHandler({TestNotFoundException.class})
-  public CustomErrorResponse handleNotFoundException(TestNotFoundException exc,
+  @MessageExceptionHandler({TestNotFoundException.class, TestSessionNotFoundException.class})
+  public CustomErrorResponse handleNotFoundException(RuntimeException exc,
       @Header("credentials") String credentials) {
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()
         .status(NOT_FOUND.value())

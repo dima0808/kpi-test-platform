@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 public @interface ValidQuestionSet {
 
   String message() default "At least one of 'questions' or 'samples' must be provided";
+
   Class<?>[] groups() default {};
+
   Class<? extends Payload>[] payload() default {};
 }

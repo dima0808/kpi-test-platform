@@ -23,11 +23,18 @@ const Sidebar = () => {
           <h1 className="sidebar__title">KPI FICTING</h1>
         </div>
         <div className="sidebar__menu">
-          <div className="menu__item active">
+          <div onClick={() => navigate('/tests')} className="menu__item active">
             <div className="menu__item--first"></div>
-            <div onClick={() => navigate('/')} className="menu__item--info">
+            <div className="menu__item--info">
               <img src={tests} alt="foto" />
               <p>Tests</p>
+            </div>
+          </div>
+          <div onClick={() => navigate('/collections')} className="menu__item active">
+            <div className="menu__item--first"></div>
+            <div className="menu__item--info">
+              <img src={tests} alt="foto" />
+              <p>Collections</p>
             </div>
           </div>
           <div className="toggle-button" onClick={toggleSidebar}>

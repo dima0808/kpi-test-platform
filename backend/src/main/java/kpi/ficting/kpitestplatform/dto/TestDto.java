@@ -39,11 +39,9 @@ public class TestDto {
   @Min(value = 1, message = "Minutes to complete test must be greater than 0")
   private Integer minutesToComplete;
 
-  @Size(min = 1, message = "Test must have at least one question")
   @Valid
   private List<QuestionDto> questions;
 
-  @Size(min = 1, message = "Test must have at least one question")
   @Valid
   private List<SampleDto> samples;
 }
