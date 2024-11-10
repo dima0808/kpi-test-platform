@@ -2,22 +2,36 @@ import React, { useState } from 'react';
 import SingleChoiceReview from '../components/review/SingleChoiceReview';
 import MultipleChoicesReview from '../components/review/MultipleChoicesReview';
 import MatchPairsReview from '../components/review/MatchPairsReview';
-import {calculateTimeDifference} from "../utils/timeUtils";
-
+import { calculateTimeDifference } from '../utils/timeUtils';
+import download from '../assets/icons/download.svg';
 function TestReview({ testSession }) {
   const [IsAnswer, setIsAnswer] = useState(false);
+
+  console.log(testSession);
 
   return (
     <div className="container">
       {IsAnswer ? (
-        <div>
-          <h2>Відповіді</h2>
-          <div>Студент: {testSession.studentGroup} {testSession.studentName}</div>
-          <div>Почато: {testSession.startedAt}</div>
-          <div>Закінчено: {testSession.finishedAt}</div>
-          <div>Тривалість: {calculateTimeDifference(testSession.startedAt, testSession.finishedAt)}</div>
+        <div className="mt-55 mb-55">
+          <h2 className="test-info__title">The answers you chose</h2>
+          <div className="test-info__details mt-55">
+            <div className="test-info__item">
+              <span className="test-info__label">Student:</span> {testSession.studentGroup}{' '}
+              {testSession.studentName}
+            </div>
+            <div className="test-info__item">
+              <span className="test-info__label">Started:</span> {testSession.startedAt}
+            </div>
+            <div className="test-info__item">
+              <span className="test-info__label">Finished:</span> {testSession.finishedAt}
+            </div>
+            <div className="test-info__item">
+              <span className="test-info__label">Duration:</span>{' '}
+              {calculateTimeDifference(testSession.startedAt, testSession.finishedAt)}
+            </div>
+          </div>
           {testSession.responses.map((response, index) => (
-            <div key={response.id} className="question__body">
+            <div key={response.id} className="question__body mt-55">
               <div className="question__timer">
                 <div className="question__counter">
                   {index + 1}/{testSession.responses.length}
@@ -60,10 +74,10 @@ function TestReview({ testSession }) {
             </div>
           ))}
           <button onClick={() => window.print()} className="test-info__pdf-button">
-            Save as PDF {/* todo: fix radio buttons */}
+            <img src={download} alt="download" />
+            Download my answers
           </button>
         </div>
-
       ) : (
         <div className="finished">
           <h1>Test have been completed!</h1>
