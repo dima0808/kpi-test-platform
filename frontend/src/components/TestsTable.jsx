@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Header from './Header';
 import SessionRow from './SessionRow';
-import { deleteTestById, getAllTests } from '../http';
+import { deleteTestById, getAllTests } from '../utils/http';
 import Cookies from 'js-cookie';
 import NotFoundTest from './NotFoundTest';
 

@@ -5,7 +5,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import java.util.List;
@@ -28,13 +27,11 @@ public class ResponseEntry {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(nullable = false)
   private Question question;
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Answer> answers;
 
   @ManyToOne
-  @JoinColumn(nullable = false)
   private TestSession testSession;
 }

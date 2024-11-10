@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getTestById } from '../http';
-import { IP } from '../constraints';
+import { getTestById } from '../utils/http';
+import { IP } from '../utils/constraints';
 import { Client } from '@stomp/stompjs';
 import TestPreview from '../components/TestPreview';
 import Question from '../components/Question';
@@ -11,18 +11,14 @@ import TestReview from '../components/TestReview';
 function Test() {
   const { id } = useParams();
   const [test, setTest] = useState(null);
-
   const [error, setError] = useState(null);
   const [client, setClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-
   const [credentials, setCredentials] = useState(null);
   const [isStarted, setIsStarted] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-
   const [testSession, setTestSession] = useState(null);
   const [question, setQuestion] = useState(null);
-
   const [message, setMessage] = useState(null);
 
   const onTestSessionMessageReceived = (message) => {
@@ -71,7 +67,6 @@ function Test() {
           brokerURL: 'ws://' + IP + '/ws',
           onConnect: () => {
             console.log('WebSocket client connected');
-            // client.subscribe('/topic/tests/' + id, onTestMessageReceived);
             setIsConnected(true);
           },
           onStompError: () => {
@@ -148,21 +143,20 @@ function Test() {
     }
   };
 
-  window.onbeforeunload = function (e) {
-    if (isStarted) {
-      e = e || window.event;
-      const confirmationMessage = 'Sure?';
-      // For IE and Firefox prior to version 4
-      if (e) {
-        e.returnValue = confirmationMessage;
-      }
-      // For Safari
-      if (window.confirm(confirmationMessage)) {
-        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley", '_blank').focus();
-        handleFinishTest();
-      }
-      return confirmationMessage;
+  useEffect(() => {
+    if (test) {
+      document.title = test.name;
     }
+  }, [test]);
+
+  window.onbeforeunload = function (e) {
+    e = e || window.event;
+    // For IE and Firefox prior to version 4
+    if (e) {
+      e.returnValue = 'Are you sure you want to leave? Your test will be finished.';
+    }
+    // For Safari
+    return 'Are you sure you want to leave? Your test will be finished.';
   };
 
   const handleNextQuestion = () => {
@@ -239,7 +233,7 @@ function Test() {
   }
 
   if (!isStarted && isFinished) {
-    return <TestReview />;
+    return <TestReview testSession={testSession} />;
   }
 }
 

@@ -17,10 +17,11 @@ public class TestSessionMapperImpl implements TestSessionMapper {
   private final QuestionMapper questionMapper;
 
   @Override
-  public List<ResponseEntryDto> toResponseEntryDtoList(List<ResponseEntry> responses) {
+  public List<ResponseEntryDto> toResponseEntryDtoList(List<ResponseEntry> responses,
+      boolean isAdmin) {
     return responses.stream()
         .map(responseEntry -> ResponseEntryDto.builder()
-            .question(questionMapper.toQuestionDto(responseEntry.getQuestion(), true))
+            .question(questionMapper.toQuestionDto(responseEntry.getQuestion(), isAdmin))
             .answerIds(responseEntry.getAnswers().stream()
                 .map(Answer::getId)
                 .collect(Collectors.toList()))

@@ -1,8 +1,7 @@
 import React from 'react';
 
-function MatchPairsReview({ answers, matchedAnswers }) {
+function MatchPairsReview({ answers, selectedAnswer }) {
   const leftOptions = [...new Set(answers.map((answer) => answer.leftOption))];
-  const rightOptions = [...new Set(answers.map((answer) => answer.rightOption))];
 
   return (
     <div className="match-pairs-review">
@@ -11,14 +10,10 @@ function MatchPairsReview({ answers, matchedAnswers }) {
           <div className="match__question" key={index}>
             <div className="match__name">{left}</div>
             <div className="match__between"></div>
-            <div className="match__field filled">{matchedAnswers[index]}</div>
-          </div>
-        ))}
-      </div>
-      <div className="match__list--answer">
-        {rightOptions.map((right, index) => (
-          <div className="match__answer" key={index}>
-            {right}
+            <div className="match__field filled">
+              {answers.find((answer) =>
+                answer.leftOption === left && selectedAnswer.includes(answer.id)).rightOption}
+            </div>
           </div>
         ))}
       </div>

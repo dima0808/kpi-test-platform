@@ -12,6 +12,7 @@ import kpi.ficting.kpitestplatform.service.exception.CollectionAlreadyExistsExce
 import kpi.ficting.kpitestplatform.service.exception.CollectionNotFoundException;
 import kpi.ficting.kpitestplatform.service.exception.QuestionMergeConflictException;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
+import kpi.ficting.kpitestplatform.service.exception.TestSessionNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(FORBIDDEN).body(errorResponse);
   }
 
-  @ExceptionHandler({TestNotFoundException.class, CollectionNotFoundException.class})
+  @ExceptionHandler({TestNotFoundException.class, CollectionNotFoundException.class,
+      TestSessionNotFoundException.class})
   public ResponseEntity<CustomErrorResponse> handleNotFoundException(RuntimeException exc,
       WebRequest request) {
     CustomErrorResponse errorResponse = CustomErrorResponse.builder()

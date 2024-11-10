@@ -16,6 +16,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -31,7 +32,9 @@ public class TestSessionController {
   @MessageMapping("/tests/{testId}/start")
   @SendTo("/topic/tests/{testId}")
   public TestMessage startTestSession(@DestinationVariable UUID testId,
-      @Payload TestSessionDto testSessionDto, @Header("credentials") String credentials) {
+      @Payload TestSessionDto testSessionDto, @Header("credentials") String credentials,
+      SimpMessageHeaderAccessor headerAccessor) {
+    testSessionDto.setSessionId(headerAccessor.getSessionId());
     TestSession testSession = testSessionService.startTestSession(
         testId, testSessionMapper.toTestSession(testSessionDto));
     TestMessage testMessage = TestMessage.builder()
@@ -80,7 +83,8 @@ public class TestSessionController {
     TestMessage testMessage = TestMessage.builder()
         .type(TestMessageType.FINISH)
         .content("Test session finished. " + credentials)
-        .testSession(testSessionMapper.toTestSessionDto(testSession, false))
+        .testSession(testSessionMapper.toTestSessionDto(testSession, true))
+
         .build();
     messagingTemplate.convertAndSendToUser(credentials, "/queue/testSession", testMessage);
     return testMessage;

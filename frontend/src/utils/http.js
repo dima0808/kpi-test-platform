@@ -138,3 +138,16 @@ export async function getFinishedSessionsByTestIdInCsv(name, id, token) {
     console.error('Failed to download file');
   }
 }
+
+export async function getAllCollections(token) {
+  const response = await fetch(`http://${IP}/api/v1/admin/collections`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+  return resData;
+}

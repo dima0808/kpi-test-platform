@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TestSessionDto {
 
+  private String sessionId;
   private String studentGroup;
   private String studentName;
 

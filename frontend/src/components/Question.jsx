@@ -11,7 +11,7 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
   useEffect(() => {
     if (!endTime) {
       const calculateEndTime = () => {
-        const deadline = new Date(test.deadline).getTime();
+        const deadline = new Date(test.deadline.replace(/(\d{2})\.(\d{2})\.(\d{4})/, '$3-$2-$1')).getTime();
         const now = new Date().getTime();
         const timeToDeadline = (deadline - now) / 1000; // in seconds
         const timeToComplete = test.minutesToComplete * 60; // in seconds

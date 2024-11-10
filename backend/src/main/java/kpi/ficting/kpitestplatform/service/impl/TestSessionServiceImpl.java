@@ -31,6 +31,11 @@ public class TestSessionServiceImpl implements TestSessionService {
   private final TestSessionRepository testSessionRepository;
 
   @Override
+  public TestSession save(TestSession testSession) {
+    return testSessionRepository.save(testSession);
+  }
+
+  @Override
   @Transactional
   public TestSession findByTestIdAndCredentials(UUID testId, String credentials,
       boolean finishedOnly) {
@@ -51,6 +56,12 @@ public class TestSessionServiceImpl implements TestSessionService {
   @Transactional
   public TestSession findByTestIdAndCredentials(UUID testId, String credentials) {
     return findByTestIdAndCredentials(testId, credentials, false);
+  }
+
+  @Override
+  public TestSession findBySessionId(String sessionId) {
+    return testSessionRepository.findTestSessionBySessionId(sessionId)
+        .orElseThrow(() -> new TestSessionNotFoundException(sessionId));
   }
 
   @Override
@@ -117,8 +128,7 @@ public class TestSessionServiceImpl implements TestSessionService {
   @Transactional
   public TestSession finishTestSession(UUID testId, String credentials) {
     TestSession testSession = findByTestIdAndCredentials(testId, credentials);
-    testSession.setFinishedAt(LocalDateTime.now()); // todo: not always for some reason
-    System.out.println("Test session finished: " + testSession.getFinishedAt());
+    testSession.setFinishedAt(LocalDateTime.now());
     return testSessionRepository.save(testSession);
   }
 

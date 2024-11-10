@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import { login } from '../http';
+import { login } from '../utils/http';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 

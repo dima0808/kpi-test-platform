@@ -13,6 +13,8 @@ public interface TestSessionRepository extends JpaRepository<TestSession, Long> 
   Optional<TestSession> findTestSessionByStudentGroupAndStudentNameAndTestId(
       String studentGroup, String studentName, UUID testId);
 
+  Optional<TestSession> findTestSessionBySessionId(String sessionId);
+
   boolean existsByStudentGroupAndStudentNameAndTestId(
       String studentGroup, String studentName, UUID testId);
 

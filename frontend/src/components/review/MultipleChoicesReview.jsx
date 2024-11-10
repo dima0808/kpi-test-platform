@@ -1,6 +1,6 @@
 import React from 'react';
 
-function MultipleChoicesReview({ answers, selectedAnswers }) {
+function MultipleChoicesReview({ answers, selectedAnswer }) {
   return (
     <div className="multiple-choice-review">
       {answers.map((answer) => (
@@ -9,7 +9,7 @@ function MultipleChoicesReview({ answers, selectedAnswers }) {
             type="checkbox"
             name="multiple-choice-review"
             value={answer.id}
-            checked={selectedAnswers.includes(answer.id)}
+            checked={selectedAnswer.includes(answer.id)}
             readOnly
           />
           <span className="custom-checkbox"></span>

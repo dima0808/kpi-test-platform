@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../http';
+import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../utils/http';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import {calculateTimeDifference} from "../utils/timeUtils";
 
 function TestInfo() {
   const { id } = useParams();
@@ -18,18 +19,6 @@ function TestInfo() {
       .then((data) => setTestFinishedSessions(data.sessions))
       .catch((error) => console.error('Error fetching finished sessions: ', error));
   }, [id]);
-
-  function calculateTimeDifference(startedAt, finishedAt) {
-    const startDate = new Date(startedAt.split('.').reverse().join('-'));
-    const endDate = new Date(finishedAt.split('.').reverse().join('-'));
-    const diffMs = endDate - startDate;
-
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-  }
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(testLink);

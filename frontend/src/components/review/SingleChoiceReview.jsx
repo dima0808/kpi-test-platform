@@ -9,7 +9,7 @@ function SingleChoiceReview({ answers, selectedAnswer }) {
             type="radio"
             name="single-choice-review"
             value={answer.id}
-            checked={selectedAnswer === answer.id}
+            checked={selectedAnswer[0] === answer.id}
             readOnly
           />
           <span className="custom-radio"></span>
