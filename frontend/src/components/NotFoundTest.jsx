@@ -10,7 +10,7 @@ function NotFoundTest() {
       </span>
       <div className="create-test">
         Скоріш{' '}
-        <Link className="link-to-create" to="/create-test">
+        <Link className="link-to-create" to={`/create-test`}>
           створи{' '}
         </Link>
         свій тест

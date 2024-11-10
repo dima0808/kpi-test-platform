@@ -107,8 +107,8 @@ export async function deleteTestById(id, token) {
   return resData;
 }
 
-export async function getFinishedSessionsByTestId(id, token) {
-  const response = await fetch(`http://${IP}/api/v1/admin/tests/${id}/finishedSessions`, {
+export async function getFinishedSessionsByTestId(id, token, credentials = '') {
+  const response = await fetch(`http://${IP}/api/v1/admin/tests/${id}/finishedSessions${credentials !== '' ? `?credentials=${credentials}` : ''}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

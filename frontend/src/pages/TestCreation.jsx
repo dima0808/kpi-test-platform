@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { createTest } from '../utils/http';
+import React, {useEffect, useState} from 'react';
+import {createTest, getQuestionsByTestId, getTestById} from '../utils/http';
 import Cookies from "js-cookie";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function TestCreation() {
+  const location = useLocation();
   const [test, setTest] = useState({
     name: '',
     openDate: '',
@@ -14,6 +15,37 @@ function TestCreation() {
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cloneId = params.get('cloneId');
+    if (cloneId) {
+      const token = Cookies.get('token');
+      getTestById(cloneId, token).then((testData) => {
+        getQuestionsByTestId(cloneId, token).then((questionsData) => {
+          setTest({
+            name: testData.name,
+            openDate: testData.openDate,
+            deadline: testData.deadline,
+            minutesToComplete: testData.minutesToComplete,
+            questions: questionsData.questions.map((question) => ({
+              content: question.content,
+              points: question.points,
+              type: question.type,
+              answers: question.type === 'matching' ?
+                question.answers
+                  .filter(answer => answer.isCorrect)
+                  .map((answer) => ({
+                    leftOption: answer.leftOption,
+                    rightOption: answer.rightOption
+                  })) : question.answers,
+            })),
+            samples: []
+          });
+        }).catch((error) => console.error('Error fetching questions:', error));
+      }).catch((error) => console.error('Error fetching test data:', error));
+    }
+  }, [location.search]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -126,8 +158,6 @@ function TestCreation() {
     createTest(test, token).then(() => navigate('/tests'))
       .catch((error) => {
         setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
-        console.log(error);
-        console.log("hello");
       });
   };
 

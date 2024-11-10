@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../utils/http';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {calculateTimeDifference} from "../utils/timeUtils";
 
 function TestInfo() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [testData, setTestData] = useState(null);
   const [testFinishedSessions, setTestFinishedSessions] = useState([]);
   const testLink = `http://localhost:3000/${id}`;
@@ -73,7 +74,11 @@ function TestInfo() {
               <td>{session.mark}</td>
               <td>{calculateTimeDifference(session.startedAt, session.finishedAt)}</td>
               <td>
-                <button className="test-info__details-button">Details</button>
+                <button onClick={() =>
+                  navigate(`/session-details/${id}?credentials=${session.studentGroup}:${session.studentName}`)
+                } className="test-info__details-button">
+                  Details
+                </button>
               </td>
             </tr>
           ))}

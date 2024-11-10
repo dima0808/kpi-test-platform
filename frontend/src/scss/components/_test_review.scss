@@ -46,4 +46,7 @@
   input[type='checkbox']:checked + .custom-checkbox + span {
     text-decoration: underline;
   }
+  .test-info__pdf-button {
+    display: none;
+  }
 }

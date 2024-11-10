@@ -3,15 +3,22 @@ import { useState } from 'react';
 
 import info from '../assets/icons/info.svg';
 import clone from '../assets/icons/clone.svg';
-import edit from '../assets/icons/edit.svg';
+// import edit from '../assets/icons/edit.svg';
 import remove from '../assets/icons/remove.svg';
+import {useNavigate} from "react-router-dom";
 
 const DropdownMenu = ({ id, onDelete }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleInfo = () => {
     window.open(`tests/${id}`, '_blank');
+    setIsMenuOpen(false);
+  };
+
+  const handleClone = async () => {
+    navigate('/create-test?cloneId=' + id);
     setIsMenuOpen(false);
   };
 
@@ -59,14 +66,14 @@ const DropdownMenu = ({ id, onDelete }) => {
             <img src={info} alt="info" />
             Info
           </div>
-          <div className="dropdown__item">
-            <img src={clone} alt="clone" />
+          <div onClick={handleClone} className="dropdown__item">
+            <img src={clone} alt="clone"/>
             Clone
           </div>
-          <div className="dropdown__item">
-            <img src={edit} alt="edit" />
-            Edit
-          </div>
+          {/*<div className="dropdown__item">*/}
+          {/*  <img src={edit} alt="edit" />*/}
+          {/*  Edit*/}
+          {/*</div>*/}
           <div onClick={() => onDelete(id)} className="dropdown__item remove">
             <img src={remove} alt="remove" />
             Remove
