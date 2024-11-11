@@ -122,6 +122,7 @@ function MatchPairs({ answers, setSelectedAnswers }) {
               onDrop={(e) => handleDrop(e, index)}
               onDragOver={handleDragOver}
               onClick={() => handleAnswerClick(index)}
+              title={matchedAnswers[index] ? 'Нажміть, аби прибрати відповідь' : ''}
               style={{ cursor: 'pointer' }}>
               {matchedAnswers[index]}
             </div>
@@ -135,7 +136,8 @@ function MatchPairs({ answers, setSelectedAnswers }) {
             draggable
             key={index}
             onDragStart={(e) => handleDragStart(e, right)}
-            ref={(el) => (rightOptionsRef.current[index] = el)}>
+            ref={(el) => (rightOptionsRef.current[index] = el)}
+            title="Зажміть та перетяніть у поле для відповіді">
             {right}
           </div>
         ))}

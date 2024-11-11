@@ -111,6 +111,34 @@
     bottom: -20px;
     left: 0;
   }
+
+  @media (max-width: 600px) {
+    padding: 20px;
+
+    &__form {
+      min-width: 100%;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    &__field {
+      width: 100%;
+      height: auto;
+
+      input {
+        padding-left: 40px;
+      }
+    }
+
+    &__name {
+      font-size: 24px;
+    }
+
+    &__button {
+      padding: 12px 30px;
+      font-size: 20px;
+    }
+  }
 }
 
 .info {
@@ -161,6 +189,23 @@
       font-size: 20px;
       font-weight: 500;
       color: $orange-score;
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__list {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    &__duration,
+    &__question,
+    &__score {
+      padding: 8px 15px;
+
+      span {
+        font-size: 16px;
+      }
     }
   }
 }

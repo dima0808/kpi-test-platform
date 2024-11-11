@@ -80,4 +80,38 @@
     font-size: 12px;
     margin-top: 5px;
   }
+
+  @media (max-width: 600px) {
+    padding: 10px;
+
+    label {
+      margin-bottom: 8px;
+
+      input,
+      select {
+        width: calc(100% - 16px);
+        padding: 8px;
+      }
+    }
+
+    .answer-input {
+      flex-direction: column;
+      align-items: flex-start;
+
+      input[type='text'] {
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+
+    button {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+    }
+  }
 }

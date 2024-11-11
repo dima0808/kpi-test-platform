@@ -50,3 +50,22 @@
     display: none;
   }
 }
+
+@media (max-width: 600px) {
+  .test-info__title {
+    font-size: 24px;
+  }
+
+  .test-info__details {
+    padding: 15px;
+  }
+
+  .test-info__item {
+    font-size: 16px;
+  }
+
+  .test-info__pdf-button {
+    font-size: 20px;
+    padding: 8px 12px;
+  }
+}
