@@ -3,12 +3,21 @@ import HeaderDropdownMenu from './HeaderDropdownMenu';
 import Search from './Search';
 
 import Tests from '../assets/icons/big-tests.svg';
-function Header({ deleteSelectedTests, onSearch }) {
+import Collections from '../assets/icons/big-collections.svg';
+import { useLocation } from 'react-router-dom';
+
+function Header({ title, deleteSelectedTests, onSearch }) {
+  const location = useLocation();
+
   return (
     <div className="tests__header">
       <div className="tests__slogan">
-        <img className="tests__img" src={Tests} alt="foto" />
-        <h1 className="tests__title">Tests</h1>
+        <img
+          className="tests__img"
+          src={location.pathname === '/tests' ? Tests : Collections}
+          alt="foto"
+        />
+        <h1 className="tests__title">{title}</h1>
       </div>
       <div className="tests__tools">
         <HeaderDropdownMenu deleteSelectedTests={deleteSelectedTests} />

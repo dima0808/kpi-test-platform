@@ -6,17 +6,40 @@ import { deleteTestById, getAllTests } from '../utils/http';
 import Cookies from 'js-cookie';
 import NotFoundTest from './NotFoundTest';
 
-const TestsTable = () => {
-  const [tests, setTests] = useState([]);
+const collectionData = [
+  {
+    id: 1,
+    name: 'Collections 1',
+  },
+  {
+    id: 2,
+    name: 'Collections 2',
+  },
+  {
+    id: 3,
+    name: 'Collections 3',
+  },
+  {
+    id: 4,
+    name: 'Collections 4',
+  },
+  {
+    id: 5,
+    name: 'Collections 5',
+  },
+];
+
+const CollectionsTable = () => {
+  const [collections, setCollections] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedTests, setSelectedTests] = useState([]);
+  const [selectedCollections, setSelectedCollections] = useState([]);
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = (value) => {
     setSearchValue(value);
   };
 
-  const filteredTests = tests.filter((test) =>
+  const filteredCollections = collections.filter((test) =>
     test.name.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
@@ -24,40 +47,45 @@ const TestsTable = () => {
     setSelectAll(!selectAll);
   };
 
-  const handleDeleteTest = async (id) => {
-    const token = Cookies.get('token');
-    try {
-      await deleteTestById(id, token);
-      setTests(tests.filter((test) => test.id !== id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //   const handleDeleteTest = async (id) => {
+  //     const token = Cookies.get('token');
+  //     try {
+  //       await deleteTestById(id, token);
+  //       setTests(tests.filter((test) => test.id !== id));
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-  const deleteSelectedTests = async () => {
-    const token = Cookies.get('token');
-    try {
-      await Promise.all(selectedTests.map((id) => deleteTestById(id, token)));
-      setTests(tests.filter((test) => !selectedTests.includes(test.id)));
-      setSelectedTests([]);
-      setSelectAll(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //   const deleteSelectedTests = async () => {
+  //     const token = Cookies.get('token');
+  //     try {
+  //       await Promise.all(selectedTests.map((id) => deleteTestById(id, token)));
+  //       setTests(tests.filter((test) => !selectedTests.includes(test.id)));
+  //       setSelectedTests([]);
+  //       setSelectAll(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
   useEffect(() => {
-    const token = Cookies.get('token');
-    getAllTests(token)
-      .then((data) => setTests(data.tests))
-      .catch((error) => console.error(error));
+    // const token = Cookies.get('token');
+    // getAllTests(token)
+    //   .then((data) => setTests(data.tests))
+    //   .catch((error) => console.error(error));
+    setCollections(collectionData);
   }, []);
 
   return (
     <div className="tests-table">
-      <Header title={'Tests'} onSearch={handleSearch} deleteSelectedTests={deleteSelectedTests} />
+      <Header
+        title={'Collections'}
+        onSearch={handleSearch}
+        // deleteSelectedTests={deleteSelectedTests}
+      />
       <div className="session-table">
-        {filteredTests.length === 0 ? (
+        {filteredCollections.length === 0 ? (
           <NotFoundTest />
         ) : (
           <>
@@ -81,18 +109,10 @@ const TestsTable = () => {
               <div className="session-table__header-actions">Actions</div>
             </div>
             <div className="session-table__body">
-              {filteredTests.map((test) => (
-                <SessionRow
-                  key={test.id}
-                  id={test.id}
-                  name={test.name}
-                  openDate={test.openDate}
-                  deadline={test.deadline}
-                  startedSessions={test.startedSessions}
-                  selectAll={selectAll}
-                  onDelete={handleDeleteTest}
-                  setSelectedTests={setSelectedTests}
-                />
+              {filteredCollections.map((collection) => (
+                <div key={collection.id}>
+                  <h2>{collection.name}</h2>
+                </div>
               ))}
             </div>
           </>
@@ -102,4 +122,4 @@ const TestsTable = () => {
   );
 };
 
-export default TestsTable;
+export default CollectionsTable;

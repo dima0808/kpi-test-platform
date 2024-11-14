@@ -6,7 +6,7 @@ import Test from './pages/Test';
 import TestCreation from './pages/TestCreation';
 import TestInfo from './pages/TestInfo';
 import Sidebar from './components/Sidebar';
-import SessionDetails from "./pages/SessionDetails";
+import SessionDetails from './pages/SessionDetails';
 
 function App() {
   return (
@@ -17,17 +17,18 @@ function App() {
         <Route path=":id" element={<Test />} />
         <Route path="tests/:id" element={<TestInfo />} />
         <Route path="create-test" element={<TestCreation />} />
+        <Route path="create-collection" element={<div>Create Collection</div>} />
         <Route path="session-details/:id" element={<SessionDetails />} />
-        <Route
-          path="collections"
-          element={
-            <div>
-              <Sidebar />
-              Collections
-            </div>
-          }
-        />
+        <Route path="collections" element={<Home />} />
       </Route>
+      <Route
+        path="*"
+        element={
+          <div>
+            <h1>NotFoundPage</h1>
+          </div>
+        }
+      />
     </Routes>
   );
 }
