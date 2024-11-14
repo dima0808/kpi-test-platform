@@ -3,29 +3,32 @@ import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestBy
 import {useNavigate, useParams} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {calculateTimeDifference} from "../utils/timeUtils";
+import {clientIP} from "../utils/constraints";
 
 function TestInfo() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [testData, setTestData] = useState(null);
   const [testFinishedSessions, setTestFinishedSessions] = useState([]);
-  const testLink = `http://localhost:3000/${id}`;
+  const [error, setError] = useState(null);
+  const testLink = `http://${clientIP}/${id}`;
 
   useEffect(() => {
     const token = Cookies.get('token');
     getTestById(id, token)
       .then(setTestData)
-      .catch((error) => console.error('Error fetching test data: ', error));
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
     getFinishedSessionsByTestId(id, token)
       .then((data) => setTestFinishedSessions(data.sessions))
-      .catch((error) => console.error('Error fetching finished sessions: ', error));
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
   }, [id]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(testLink);
   };
 
-  if (!testData) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+  else if (!testData) return <div>Loading...</div>;
 
   return (
     <div className="test-info">

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {createTest, getQuestionsByTestId, getTestById} from '../utils/http';
+import {createTest, getAllCollections, getQuestionsByTestId, getSamplesByTestId, getTestById} from '../utils/http';
 import Cookies from "js-cookie";
 import {useLocation, useNavigate} from "react-router-dom";
 
@@ -13,6 +13,7 @@ function TestCreation() {
     questions: [],
     samples: []
   });
+  const [collections, setCollections] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -23,29 +24,40 @@ function TestCreation() {
       const token = Cookies.get('token');
       getTestById(cloneId, token).then((testData) => {
         getQuestionsByTestId(cloneId, token).then((questionsData) => {
-          setTest({
-            name: testData.name,
-            openDate: testData.openDate,
-            deadline: testData.deadline,
-            minutesToComplete: testData.minutesToComplete,
-            questions: questionsData.questions.map((question) => ({
-              content: question.content,
-              points: question.points,
-              type: question.type,
-              answers: question.type === 'matching' ?
-                question.answers
-                  .filter(answer => answer.isCorrect)
-                  .map((answer) => ({
-                    leftOption: answer.leftOption,
-                    rightOption: answer.rightOption
-                  })) : question.answers,
-            })),
-            samples: []
-          });
+          getSamplesByTestId(cloneId, token).then((samplesData) => {
+            setTest({
+              name: testData.name,
+              openDate: testData.openDate,
+              deadline: testData.deadline,
+              minutesToComplete: testData.minutesToComplete,
+              questions: questionsData.questions.map((question) => ({
+                content: question.content,
+                points: question.points,
+                type: question.type,
+                answers: question.type === 'matching' ?
+                  question.answers
+                    .filter(answer => answer.isCorrect)
+                    .map((answer) => ({
+                      leftOption: answer.leftOption,
+                      rightOption: answer.rightOption
+                    })) : question.answers,
+              })),
+              samples: samplesData.samples.map((sample) => ({
+                collectionName: sample.collectionName,
+                points: sample.points,
+                questionsCount: sample.questionsCount
+              }))
+            });
+          }).catch((error) => console.error('Error fetching collections:', error));
         }).catch((error) => console.error('Error fetching questions:', error));
       }).catch((error) => console.error('Error fetching test data:', error));
     }
   }, [location.search]);
+
+  useEffect(() => {
+    getAllCollections().then((data) => setCollections(data.collections))
+      .catch((error) => console.error('Error fetching collections:', error));
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -67,6 +79,40 @@ function TestCreation() {
     });
   };
 
+  const handleAddCollection = () => {
+    setTest({
+      ...test,
+      samples: [
+        ...test.samples,
+        {
+          collectionName: collections[0]?.name || '',
+          points: 0,
+          questionsCount: 0
+        }
+      ]
+    });
+  };
+
+  const handleDeleteCollection = (index) => {
+    const samples = [...test.samples];
+    samples.splice(index, 1);
+    setTest({ ...test, samples });
+  }
+
+  const handleCollectionChange = (index, e) => {
+    const { name, value } = e.target;
+    const samples = [...test.samples];
+    samples[index][name] = value;
+    setTest({ ...test, samples });
+  }
+
+  const handleCollectionNameChange = (index, e) => {
+    const { value } = e.target;
+    const samples = [...test.samples];
+    samples[index].collectionName = value;
+    setTest({ ...test, samples });
+  }
+
   const handleDeleteQuestion = (index) => {
     const questions = [...test.questions];
     questions.splice(index, 1);
@@ -84,13 +130,11 @@ function TestCreation() {
     const { value } = e.target;
     const questions = [...test.questions];
     const currentType = questions[index].type;
-
     if (currentType === 'matching' || value === 'matching') {
       questions[index].answers = [];
     } else {
       questions[index].answers = questions[index].answers.map(answer => ({ ...answer, isCorrect: false }));
     }
-
     questions[index].type = value;
     setTest({ ...test, questions });
   };
@@ -346,8 +390,60 @@ function TestCreation() {
           </div>
         ))}
       </div>
+      <div className="collections-container">
+        {test.samples.map((sample, sIndex) => (
+          <div className="collection" key={sIndex}>
+            <div className="collection-form">
+              <div>
+                <label>Collection Name:</label>
+                <select
+                  name="collectionName"
+                  value={sample.collectionName}
+                  onChange={(e) => handleCollectionNameChange(sIndex, e)}
+                >
+                  {collections.map((collection) => (
+                    <option key={collection.id} value={collection.name}>{collection.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label>Points:</label>
+                <input
+                  type="number"
+                  name="points"
+                  value={sample.points}
+                  onChange={(e) => handleCollectionChange(sIndex, e)}
+                  onBlur={(e) => validateField('collection-points', e.target.value, sIndex)}
+                  className={errors[`collection-points-${sIndex}`] ? 'error-border' : ''}
+                />
+                {errors[`collection-points-${sIndex}-0`] && (
+                  <div className="error-message">{errors[`collection-points-${sIndex}-0`]}</div>
+                )}
+              </div>
+              <div>
+                <label>Questions count:</label>
+                <input
+                  type="number"
+                  name="questionsCount"
+                  value={sample.questionsCount}
+                  onChange={(e) => handleCollectionChange(sIndex, e)}
+                  onBlur={(e) => validateField('collection-points', e.target.value, sIndex)}
+                  className={errors[`collection-questions-count-${sIndex}`] ? 'error-border' : ''}
+                />
+                {errors[`collection-questions-count-${sIndex}-0`] && (
+                  <div className="error-message">{errors[`collection-questions-count-${sIndex}-0`]}</div>
+                )}
+              </div>
+            </div>
+            <button className="delete-button" onClick={() => handleDeleteCollection(sIndex)}>
+              Delete Collection
+            </button>
+          </div>
+        ))}
+      </div>
       <div className="buttons-container">
         <button onClick={handleAddQuestion}>Add Question</button>
+        <button onClick={handleAddCollection}>Add Collection</button>
         <button onClick={handleSubmit}>Create Test</button>
       </div>
 

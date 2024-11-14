@@ -1,20 +1,22 @@
 package kpi.ficting.kpitestplatform.util;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kpi.ficting.kpitestplatform.common.QuestionType;
 import kpi.ficting.kpitestplatform.domain.Answer;
 import kpi.ficting.kpitestplatform.domain.Question;
 import kpi.ficting.kpitestplatform.domain.ResponseEntry;
+import kpi.ficting.kpitestplatform.domain.Sample;
 import kpi.ficting.kpitestplatform.domain.TestSession;
 
 public class TestUtils {
 
-  public static int getMaxScore(List<Question> questions) {
-    return questions.stream()
-        .map(Question::getPoints)
-        .reduce(Integer::sum)
-        .orElse(0);
+  public static int getMaxScore(List<Question> questions, List<Sample> samples) {
+    return questions.stream().mapToInt(Question::getPoints).sum() +
+        samples.stream().mapToInt((s) -> s.getPoints() * s.getQuestionsCount()).sum();
+  }
+
+  public static int getQuestionsCount(List<Question> questions, List<Sample> samples) {
+    return questions.size() + samples.stream().mapToInt(Sample::getQuestionsCount).sum();
   }
 
   public static int getStartedSessions(List<TestSession> sessions) {
