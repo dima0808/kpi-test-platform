@@ -8,8 +8,6 @@ import download from '../assets/icons/download.svg';
 function TestReview({ testSession }) {
   const [IsAnswer, setIsAnswer] = useState(false);
 
-  console.log(testSession);
-
   return (
     <div className="container">
       {IsAnswer ? (

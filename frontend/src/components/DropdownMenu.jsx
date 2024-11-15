@@ -7,18 +7,18 @@ import clone from '../assets/icons/clone.svg';
 import remove from '../assets/icons/remove.svg';
 import {useNavigate} from "react-router-dom";
 
-const DropdownMenu = ({ id, onDelete }) => {
+const DropdownMenu = ({ id, onDelete, isTest = true }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const handleInfo = () => {
-    window.open(`tests/${id}`, '_blank');
+    window.open(`${isTest ? 'tests' : 'collections'}/${id}`, '_blank');
     setIsMenuOpen(false);
   };
 
   const handleClone = async () => {
-    navigate('/create-test?cloneId=' + id);
+    navigate(`/create-${isTest ? 'test' : 'collection'}?clone${isTest ? 'Id' : 'Name'}=${id}`);
     setIsMenuOpen(false);
   };
 

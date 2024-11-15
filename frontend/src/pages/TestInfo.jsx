@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../utils/http';
+import {
+  getFinishedSessionsByTestId,
+  getFinishedSessionsByTestIdInCsv,
+  getQuestionsByTestId,
+  getTestById
+} from '../utils/http';
 import {useNavigate, useParams} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {calculateTimeDifference} from "../utils/timeUtils";
 import {clientIP} from "../utils/constraints";
+import Questions from "../components/info/Questions";
 
 function TestInfo() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [testData, setTestData] = useState(null);
   const [testFinishedSessions, setTestFinishedSessions] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
   const testLink = `http://${clientIP}/${id}`;
 
@@ -18,9 +25,13 @@ function TestInfo() {
     getTestById(id, token)
       .then(setTestData)
       .catch((error) => setError({ message: error.message || 'An error occurred' }));
+    getQuestionsByTestId(id, token)
+      .then((data) => setQuestions(data.questions))
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
     getFinishedSessionsByTestId(id, token)
       .then((data) => setTestFinishedSessions(data.sessions))
       .catch((error) => setError({ message: error.message || 'An error occurred' }));
+
   }, [id]);
 
   const handleCopyLink = () => {
@@ -52,6 +63,8 @@ function TestInfo() {
         <p>Started Sessions: {testData.startedSessions}</p>
         <p>Finished Sessions: {testData.finishedSessions}</p>
       </div>
+
+      <Questions questions={questions} />
 
       <button
         onClick={() => getFinishedSessionsByTestIdInCsv(testData.name, id, Cookies.get('token'))}

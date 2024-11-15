@@ -1,6 +1,7 @@
 package kpi.ficting.kpitestplatform.web;
 
 import jakarta.validation.Valid;
+import kpi.ficting.kpitestplatform.domain.Collection;
 import kpi.ficting.kpitestplatform.dto.CollectionDto;
 import kpi.ficting.kpitestplatform.dto.CollectionInfo;
 import kpi.ficting.kpitestplatform.dto.CollectionListInfo;
@@ -58,9 +59,19 @@ public class CollectionManagementController {
             collectionService.create(collectionMapper.toCollection(collectionDto))));
   }
 
-  @DeleteMapping("{collectionId}")
-  public ResponseEntity<Void> deleteCollection(@PathVariable Long collectionId) {
-    collectionService.delete(collectionId);
+  @PostMapping("{collectionName}/questions")
+  public ResponseEntity<QuestionListDto> addQuestionsToCollection(
+      @PathVariable String collectionName, @RequestBody @Valid QuestionListDto questionListDto) {
+    Collection collection = collectionService.findByName(collectionName);
+    return ResponseEntity.status(HttpStatus.CREATED.value())
+        .body(questionMapper.toQuestionListDto(
+            questionService.createAll(questionMapper.toQuestionList(
+                questionListDto.getQuestions(), collection)), true));
+  }
+
+  @DeleteMapping("{collectionName}")
+  public ResponseEntity<Void> deleteCollection(@PathVariable String collectionName) {
+    collectionService.delete(collectionName);
     return ResponseEntity.noContent().build();
   }
 }

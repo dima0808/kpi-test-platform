@@ -94,6 +94,10 @@ a {
   text-decoration: none;
 }
 
+.border-saved {
+    border: 3px solid $blue-dark !important;
+}
+
 @mixin noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */

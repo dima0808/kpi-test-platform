@@ -3,6 +3,7 @@ package kpi.ficting.kpitestplatform.config;
 import jakarta.transaction.Transactional;
 import kpi.ficting.kpitestplatform.common.QuestionType;
 import kpi.ficting.kpitestplatform.domain.*;
+import kpi.ficting.kpitestplatform.service.CollectionService;
 import kpi.ficting.kpitestplatform.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -19,11 +20,13 @@ import java.util.List;
 public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
   private final TestService testService;
+  private final CollectionService collectionService;
 
   @Override
   @Transactional
   public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
     loadTestData();
+    loadCollectionData();
   }
 
   private void loadTestData() {
@@ -112,5 +115,13 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
     test.setQuestions(List.of(question1, question2, question3));
 
     testService.create(test);
+  }
+
+  private void loadCollectionData() {
+    Collection collection = Collection.builder()
+        .name("simp collection")
+        .build();
+
+    collectionService.create(collection);
   }
 }

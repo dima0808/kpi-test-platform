@@ -5,8 +5,9 @@ import Login from './pages/Login';
 import Test from './pages/Test';
 import TestCreation from './pages/TestCreation';
 import TestInfo from './pages/TestInfo';
-import Sidebar from './components/Sidebar';
 import SessionDetails from './pages/SessionDetails';
+import CollectionCreation from "./pages/CollectionCreation";
+import CollectionInfo from "./pages/CollectionInfo";
 
 function App() {
   return (
@@ -14,12 +15,13 @@ function App() {
       <Route path="/" element={''}>
         <Route index element={<Login />} />
         <Route path="tests" element={<Home />} />
+        <Route path="collections" element={<Home />} />
         <Route path=":id" element={<Test />} />
         <Route path="tests/:id" element={<TestInfo />} />
+        <Route path="collections/:name" element={<CollectionInfo />} />
         <Route path="create-test" element={<TestCreation />} />
-        <Route path="create-collection" element={<div>Create Collection</div>} />
+        <Route path="create-collection" element={<CollectionCreation />} />
         <Route path="session-details/:id" element={<SessionDetails />} />
-        <Route path="collections" element={<Home />} />
       </Route>
       <Route
         path="*"

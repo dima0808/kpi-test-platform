@@ -1,33 +1,11 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Header from './Header';
-import SessionRow from './SessionRow';
-import { deleteTestById, getAllTests } from '../utils/http';
-import Cookies from 'js-cookie';
 import NotFoundTest from './NotFoundTest';
+import {deleteCollectionByName, getAllCollections} from "../utils/http";
+import Cookies from "js-cookie";
+import DropdownMenu from "./DropdownMenu";
 
-const collectionData = [
-  {
-    id: 1,
-    name: 'Collections 1',
-  },
-  {
-    id: 2,
-    name: 'Collections 2',
-  },
-  {
-    id: 3,
-    name: 'Collections 3',
-  },
-  {
-    id: 4,
-    name: 'Collections 4',
-  },
-  {
-    id: 5,
-    name: 'Collections 5',
-  },
-];
 
 const CollectionsTable = () => {
   const [collections, setCollections] = useState([]);
@@ -47,15 +25,15 @@ const CollectionsTable = () => {
     setSelectAll(!selectAll);
   };
 
-  //   const handleDeleteTest = async (id) => {
-  //     const token = Cookies.get('token');
-  //     try {
-  //       await deleteTestById(id, token);
-  //       setTests(tests.filter((test) => test.id !== id));
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+    const handleDeleteCollection = async (name) => {
+      const token = Cookies.get('token');
+      try {
+        await deleteCollectionByName(name, token);
+        setCollections(collections.filter((collection) => collection.name !== name));
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
   //   const deleteSelectedTests = async () => {
   //     const token = Cookies.get('token');
@@ -70,11 +48,10 @@ const CollectionsTable = () => {
   //   };
 
   useEffect(() => {
-    // const token = Cookies.get('token');
-    // getAllTests(token)
-    //   .then((data) => setTests(data.tests))
-    //   .catch((error) => console.error(error));
-    setCollections(collectionData);
+    const token = Cookies.get('token');
+    getAllCollections(token)
+      .then((data) => setCollections(data.collections))
+      .catch((error) => console.error(error));
   }, []);
 
   return (
@@ -100,18 +77,21 @@ const CollectionsTable = () => {
                 <label htmlFor="selectAll"></label>
               </div>
               <div className="session-table__header-title">Title</div>
-              <div className="session-table__header-start-date">Start date</div>
-              <div className="session-table__header-end-date">End date</div>
-              <div className="session-table__header-status">Status</div>
-              <div className="session-table__header-sessions">
-                <span>Active sessions</span>
-              </div>
+              <div className="session-table__header-start-date">Questions count</div>
               <div className="session-table__header-actions">Actions</div>
             </div>
             <div className="session-table__body">
               {filteredCollections.map((collection) => (
                 <div key={collection.id}>
-                  <h2>{collection.name}</h2>
+                  <div>
+                    <h2>{collection.name}</h2>
+                  </div>
+                  <div>
+                    {collection.questionsCount}
+                  </div>
+                  <div>
+                    <DropdownMenu id={collection.name} onDelete={handleDeleteCollection} isTest={false} />
+                  </div>
                 </div>
               ))}
             </div>

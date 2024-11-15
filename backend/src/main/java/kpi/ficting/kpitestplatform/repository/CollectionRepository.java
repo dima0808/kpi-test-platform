@@ -9,4 +9,6 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
   Optional<Collection> findByName(String name);
 
   boolean existsByName(String name);
+
+  void deleteByName(String collectionName);
 }

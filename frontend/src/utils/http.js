@@ -88,15 +88,58 @@ export async function createTest(data, token) {
   return resData;
 }
 
-export async function updateTest(data, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${data.id}`, {
-    method: 'PUT',
+export async function getCollectionByName(name, token) {
+  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+  return resData;
+}
+
+export async function getQuestionsByCollectionName(name, token) {
+  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}/questions`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+  return resData;
+}
+
+export async function createCollection(data, token) {
+  const response = await fetch(`http://${serverIP}/api/v1/admin/collections`, {
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
   });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+  return resData;
+}
+
+export async function addQuestionToCollection(data, name, token) {
+  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}/questions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({questions: [data]}),
+  });
+  console.log({questions: [data]})
   const resData = await response.json();
   if (!response.ok) {
     throw new Error(resData.message);
@@ -116,7 +159,21 @@ export async function deleteTestById(id, token) {
   if (!response.ok) {
     throw new Error(resData.message);
   }
+  return resData;
+}
 
+export async function deleteCollectionByName(name, token) {
+  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const text = await response.text();
+  const resData = text ? JSON.parse(text) : {};
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
   return resData;
 }
 

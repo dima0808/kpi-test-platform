@@ -1,5 +1,6 @@
 package kpi.ficting.kpitestplatform.service.impl;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import kpi.ficting.kpitestplatform.domain.Collection;
 import kpi.ficting.kpitestplatform.repository.CollectionRepository;
@@ -35,7 +36,8 @@ public class CollectionServiceImpl implements CollectionService {
   }
 
   @Override
-  public void delete(Long collectionId) {
-    collectionRepository.deleteById(collectionId);
+  @Transactional
+  public void delete(String collectionName) {
+    collectionRepository.deleteByName(collectionName);
   }
 }
