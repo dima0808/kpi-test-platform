@@ -17,9 +17,22 @@ public class QuestionServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
 
   @Override
+  public List<Question> createAll(List<Question> questions) {
+    return questionRepository.saveAll(questions);
+  }
+
+  @Override
   @Transactional
   public List<Question> findByTestId(UUID testId) {
     List<Question> questions = questionRepository.findByTestId(testId);
+    questions.forEach(question -> Hibernate.initialize(question.getAnswers()));
+    return questions;
+  }
+
+  @Override
+  @Transactional
+  public List<Question> findByCollectionName(String collectionName) {
+    List<Question> questions = questionRepository.findByCollectionName(collectionName);
     questions.forEach(question -> Hibernate.initialize(question.getAnswers()));
     return questions;
   }

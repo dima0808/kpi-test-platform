@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'San Francisco';
+  font-weight: 400;
+  src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff');
+}
+
+@font-face {
+  font-family: 'San Francisco';
+  font-weight: 500;
+  src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.woff');
+}
+
+@font-face {
+  font-family: 'San Francisco';
+  font-weight: 600;
+  src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.woff');
+}
+
+@font-face {
+  font-family: 'San Francisco';
+  font-weight: 700;
+  src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff');
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -15,12 +39,33 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   color: $black;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont;
+  font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   background-color: $background;
   height: 100vh;
+}
+
+.container {
   position: relative;
+  width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.container__center {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mt-55 {
+  margin-top: 55px !important;
+}
+
+.mb-55 {
+  margin-bottom: 55px !important;
 }
 
 a,
@@ -47,6 +92,10 @@ h2 {
 
 a {
   text-decoration: none;
+}
+
+.border-saved {
+    border: 3px solid $blue-dark !important;
 }
 
 @mixin noselect {

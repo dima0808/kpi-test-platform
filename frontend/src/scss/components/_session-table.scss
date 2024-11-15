@@ -3,6 +3,10 @@
   margin: 0 auto;
   border-radius: 8px;
 
+  &__body {
+    padding-bottom: 150px;
+  }
+
   &__header {
     display: flex;
     align-items: center;
@@ -10,12 +14,13 @@
     color: $color-table;
     font-size: 19px;
     font-weight: 500;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $color-table;
 
     &-checkbox {
       position: relative;
       width: 24px;
       margin-left: 24px;
+      z-index: 5;
 
       input[type='checkbox'] {
         opacity: 0;
@@ -41,12 +46,12 @@
 
       input[type='checkbox']:checked + label::before {
         content: '✔';
-        color: white;
+        color: $white;
         font-size: 14px;
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-6px, -12px);
+        transform: translate(-50%, -65%);
       }
     }
 
@@ -93,6 +98,21 @@
     &-actions {
       width: 180px;
       text-align: center;
+    }
+  }
+}
+
+.no-tests {
+  text-align: center;
+  font-size: 48px;
+  margin-top: 90px;
+
+  .link-to-create {
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

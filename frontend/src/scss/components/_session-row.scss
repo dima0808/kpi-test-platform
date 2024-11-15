@@ -36,18 +36,13 @@
 
     input[type='checkbox']:checked + label::before {
       content: '✔';
-      color: white;
+      color: $white;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -11px);
+      transform: translate(-50%, -65%);
       font-size: 12px;
     }
-
-    // input[type='checkbox']:focus + label {
-    //   outline: 2px solid #4caf50;
-    //   outline-offset: 2px;
-    // }
   }
 
   &__title {
@@ -95,10 +90,6 @@
       font-weight: 500;
       font-size: 16px;
       color: $green-text;
-
-      span {
-        margin-bottom: 3px;
-      }
     }
 
     .status-inactive {
@@ -112,10 +103,6 @@
       font-weight: 500;
       font-size: 16px;
       color: $red-text;
-
-      span {
-        margin-bottom: 3px;
-      }
     }
 
     .circle-green {
@@ -162,4 +149,8 @@
     padding-left: 25px;
     border-left: 1px solid $color-table;
   }
+}
+
+.session-row.selected {
+  box-shadow: inset 0 0 0 2px $blue-checked;
 }

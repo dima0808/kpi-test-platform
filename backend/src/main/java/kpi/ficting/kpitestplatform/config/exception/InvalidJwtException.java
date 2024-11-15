@@ -1,4 +1,4 @@
-package kpi.ficting.kpitestplatform.config;
+package kpi.ficting.kpitestplatform.config.exception;
 
 public class InvalidJwtException extends RuntimeException {
 

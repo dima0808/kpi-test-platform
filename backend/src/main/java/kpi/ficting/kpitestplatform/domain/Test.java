@@ -26,16 +26,20 @@ public class Test {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id; // todo: ask Valerii about UUID. Dashes between numbers?
+  private UUID id;
 
   private String name;
-
-  private String description;
 
   private LocalDateTime openDate;
   private LocalDateTime deadline;
   private Integer minutesToComplete;
 
   @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+  private List<TestSession> sessions;
+
+  @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
   private List<Question> questions;
+
+  @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+  private List<Sample> samples;
 }

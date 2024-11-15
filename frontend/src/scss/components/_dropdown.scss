@@ -1,7 +1,6 @@
 .dropdown {
   position: relative;
   height: 28px;
-  z-index: 2;
 
   &__item {
     display: flex;
@@ -19,13 +18,14 @@
   }
   &__menu {
     position: absolute;
-    top: 85%;
-    padding: 8px 12px;
+    top: 95%;
+    left: 0;
+    padding: 6px 12px;
     background-color: $white;
     width: 100%;
     border: 1px solid $black;
     border-radius: 0 0 7px 7px;
-    z-index: 1;
+    z-index: 10;
   }
 
   &-toggle {
@@ -42,7 +42,7 @@
     border: none;
     border-radius: 7px;
     cursor: pointer;
-    z-index: 2;
+    z-index: 9;
     transition: background-color 0.3s ease, color 0.3s ease;
 
     span {
@@ -56,9 +56,12 @@
     }
 
     &--inactive {
+      position: relative;
+      z-index: 2;
       background-color: $white;
       color: $black;
       border: 1px solid $black;
+      border-radius: 7px 7px 0 0;
 
       span {
         color: $black;
@@ -75,8 +78,8 @@
 }
 
 .remove {
-  margin-top: 8px;
-  padding-block: 20px;
+  margin-top: 2px;
+  padding-top: 6px;
   color: $red-light;
   border-top: 2px solid $brd-clr;
 }
@@ -84,4 +87,8 @@
 .header-toggle {
   height: 34px;
   width: 133px;
+}
+
+.header-menu {
+  top: 110%;
 }

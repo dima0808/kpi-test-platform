@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Tests from '../assets/icons/tests.svg';
+import { useLocation, useNavigate } from 'react-router-dom';
+import tests_black from '../assets/icons/tests-black.svg';
+import collections_black from '../assets/icons/collections-black.svg';
+import tests_light from '../assets/icons/tests-light.svg';
+import collections_light from '../assets/icons/collections-light.svg';
 import arrows from '../assets/icons/arrows.svg';
+import Cookies from 'js-cookie';
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   const logout = () => {
-    navigate('/login');
+    Cookies.remove('token');
+    navigate('/');
   };
   return (
     <>
@@ -21,11 +27,42 @@ const Sidebar = () => {
           <h1 className="sidebar__title">KPI FICTING</h1>
         </div>
         <div className="sidebar__menu">
-          <div className="menu__item active">
-            <div className="menu__item--first"></div>
+          <div
+            onClick={() => {
+              navigate('/tests');
+              setIsOpen(false);
+            }}
+            className={`menu__item ${location.pathname === '/tests' ? 'active' : ''}`}>
+            <div
+              className={`menu__item--first ${
+                location.pathname === '/tests' ? '' : 'bg-white'
+              }`}></div>
             <div className="menu__item--info">
-              <img src={Tests} alt="foto" />
+              <img
+                src={location.pathname === '/tests' ? tests_light : tests_black}
+                alt="foto"
+                className={`${location.pathname === '/tests' ? 'active-icon' : ''}`}
+              />
               <p>Tests</p>
+            </div>
+          </div>
+          <div
+            onClick={() => {
+              navigate('/collections');
+              setIsOpen(false);
+            }}
+            className={`menu__item ${location.pathname === '/collections' ? 'active' : ''}`}>
+            <div
+              className={`menu__item--first ${
+                location.pathname === '/collections' ? '' : 'bg-white'
+              }`}></div>
+            <div className="menu__item--info">
+              <img
+                src={location.pathname === '/collections' ? collections_light : collections_black}
+                alt="foto"
+                className={`${location.pathname === '/collections' ? 'active-icon' : ''}`}
+              />
+              <p>Collections</p>
             </div>
           </div>
           <div className="toggle-button" onClick={toggleSidebar}>

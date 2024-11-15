@@ -1,11 +1,14 @@
 package kpi.ficting.kpitestplatform.service.impl;
 
+import static kpi.ficting.kpitestplatform.util.TestUtils.getFinishedSessions;
+import static kpi.ficting.kpitestplatform.util.TestUtils.getStartedSessions;
+
 import java.util.List;
 import java.util.UUID;
-import kpi.ficting.kpitestplatform.domain.Question;
 import kpi.ficting.kpitestplatform.domain.Test;
 import kpi.ficting.kpitestplatform.repository.TestRepository;
 import kpi.ficting.kpitestplatform.service.TestService;
+import kpi.ficting.kpitestplatform.service.exception.ImmutableTestException;
 import kpi.ficting.kpitestplatform.service.exception.TestNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,17 +32,25 @@ public class TestServiceImpl implements TestService {
 
   @Override
   public Test create(Test test) {
-    for (Question question : test.getQuestions()) {
-      question.setTest(test);
-    }
+    test.setSessions(List.of());
+    return testRepository.save(test);
+  }
+
+  @Override
+  public Test save(Test test) {
     return testRepository.save(test);
   }
 
   @Override
   public Test update(UUID testId, Test test) {
     Test testToUpdate = findById(testId);
+    if (getStartedSessions(test.getSessions()) != 0) {
+      throw new ImmutableTestException(testId, "has started sessions");
+    }
+    if (getFinishedSessions(test.getSessions()) != 0) {
+      throw new ImmutableTestException(testId, "has finished sessions");
+    }
     testToUpdate.setName(test.getName());
-    testToUpdate.setDescription(test.getDescription());
     testToUpdate.setOpenDate(test.getOpenDate());
     testToUpdate.setDeadline(test.getDeadline());
     testToUpdate.setMinutesToComplete(test.getMinutesToComplete());

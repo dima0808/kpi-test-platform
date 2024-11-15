@@ -12,6 +12,8 @@ public interface TestService {
 
   Test create(Test test);
 
+  Test save(Test test);
+
   Test update(UUID testId, Test test);
 
   void deleteById(UUID testId);

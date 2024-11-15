@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum QuestionType {
 
-  SINGLE_CHOICE("single"),
-  MULTIPLE_CHOICES("multiple"),
+  SINGLE_CHOICE("single_choice"),
+  MULTIPLE_CHOICES("multiple_choices"),
   MATCHING("matching");
 
   private final String displayName;

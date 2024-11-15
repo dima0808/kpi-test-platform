@@ -21,11 +21,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Answer { // todo: ask Valerii about inheritance. Different tables for different types of answers or not?
+public class Answer {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  private Boolean isCorrect;
 
   @ManyToOne
   @JoinColumn(nullable = false)

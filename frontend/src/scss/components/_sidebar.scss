@@ -1,6 +1,6 @@
 .sidebar {
   width: 268px;
-  height: 218px;
+  height: auto;
   background-color: $white;
   padding: 18px 23px;
   position: fixed;
@@ -9,12 +9,16 @@
   transform: translateY(-50%);
   transition: left 0.3s ease;
   border-radius: 0 18px 18px 0;
+  z-index: 15;
 
   &.open {
     left: 0;
   }
 
   &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     width: 220px;
     padding: 19px 31px 19px 5px;
     border-block: 1px solid $brd-clr;
@@ -29,7 +33,8 @@
   }
 
   &__title {
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     font-size: 32px;
     background: linear-gradient(90deg, #8b00e2, #2d96ff);
     background-clip: text;
@@ -44,7 +49,7 @@
     height: 43px;
     cursor: pointer;
     border-radius: 12px;
-    transition: all 0.3s ease-in-out;
+    background-color: $white;
 
     &:hover {
       opacity: 0.8;
@@ -65,7 +70,7 @@
       }
       p {
         font-size: 22px;
-        color: $blue-dark;
+        color: $black;
         font-weight: 600;
         padding-bottom: 2px;
       }
@@ -73,13 +78,21 @@
 
     &.active {
       background-color: $blue-light;
+
+      & p {
+        color: $blue-dark;
+      }
+
+      &--first {
+        background-color: $blue-dark;
+      }
     }
   }
 }
 
 .logout {
   &__btn {
-    padding-block: 18px;
+    padding-top: 18px;
     padding-left: 20px;
     display: flex;
     width: 100%;
@@ -130,4 +143,8 @@
     cursor: pointer;
     transition: all 0.3s ease-in-out;
   }
+}
+
+.bg-white {
+  background-color: $white !important;
 }
