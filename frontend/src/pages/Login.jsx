@@ -3,6 +3,8 @@ import { login } from '../utils/http';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import human from '../assets/icons/human.svg';
+import password from '../assets/icons/password.svg';
 
 function Login() {
   const navigate = useNavigate();
@@ -19,17 +21,36 @@ function Login() {
   }, [navigate]);
 
   return (
-    <div className="container">
+    <div className="container__center">
       <div className="login">
-        <h1 className="login__title">Login</h1>
-        <input
-          ref={usernameRef}
-          value="admin"
-          type="text"
-          placeholder="Username"
-          className="login__input"
-        />
-        <input ref={passwordRef} type="password" placeholder="Password" className="login__input" />
+        <div className="login__title">
+          <h1>KPI FICTING</h1>
+        </div>
+        <div className="login__fields">
+          <div className="login__field">
+            <div className="login__img">
+              <img src={human} alt="human" />
+            </div>
+            <input
+              ref={usernameRef}
+              value="admin"
+              type="text"
+              placeholder="Username"
+              className="login__input"
+            />
+          </div>
+          <div className="login__field">
+            <div className="login__img">
+              <img src={password} alt="password" />
+            </div>
+            <input
+              ref={passwordRef}
+              type="password"
+              placeholder="Password"
+              className="login__input"
+            />
+          </div>
+        </div>
         <button
           onClick={() => {
             login({

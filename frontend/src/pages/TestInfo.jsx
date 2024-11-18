@@ -3,13 +3,13 @@ import {
   getFinishedSessionsByTestId,
   getFinishedSessionsByTestIdInCsv,
   getQuestionsByTestId,
-  getTestById
+  getTestById,
 } from '../utils/http';
-import {useNavigate, useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import {calculateTimeDifference} from "../utils/timeUtils";
-import {clientIP} from "../utils/constraints";
-import Questions from "../components/info/Questions";
+import { calculateTimeDifference } from '../utils/timeUtils';
+import { clientIP } from '../utils/constraints';
+import Questions from '../components/info/Questions';
 
 function TestInfo() {
   const { id } = useParams();
@@ -31,7 +31,6 @@ function TestInfo() {
     getFinishedSessionsByTestId(id, token)
       .then((data) => setTestFinishedSessions(data.sessions))
       .catch((error) => setError({ message: error.message || 'An error occurred' }));
-
   }, [id]);
 
   const handleCopyLink = () => {
@@ -64,12 +63,11 @@ function TestInfo() {
         <p>Finished Sessions: {testData.finishedSessions}</p>
       </div>
 
-      <Questions questions={questions} />
+      {/* <Questions questions={questions} /> */}
 
       <button
         onClick={() => getFinishedSessionsByTestIdInCsv(testData.name, id, Cookies.get('token'))}
-        className="test-info__import-button"
-      >
+        className="test-info__import-button">
         Export
       </button>
       <table className="test-info__table">
@@ -90,9 +88,13 @@ function TestInfo() {
               <td>{session.mark}</td>
               <td>{calculateTimeDifference(session.startedAt, session.finishedAt)}</td>
               <td>
-                <button onClick={() =>
-                  navigate(`/session-details/${id}?credentials=${session.studentGroup}:${session.studentName}`)
-                } className="test-info__details-button">
+                <button
+                  onClick={() =>
+                    navigate(
+                      `/session-details/${id}?credentials=${session.studentGroup}:${session.studentName}`,
+                    )
+                  }
+                  className="test-info__details-button">
                   Details
                 </button>
               </td>

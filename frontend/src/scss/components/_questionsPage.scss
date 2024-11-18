@@ -120,3 +120,30 @@
   color: $red-crl;
   border: 2px solid $red-crl;
 }
+
+.border-error {
+  box-shadow: 0 0 0 2px $red-crl;
+  animation: shuffle 0.5s ease-in-out;
+}
+
+.color-error {
+  color: $red-crl !important;
+}
+
+@keyframes shuffle {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

@@ -4,10 +4,9 @@ import MultipleChoicesReview from '../../components/review/MultipleChoicesReview
 import MatchPairsReview from '../../components/review/MatchPairsReview';
 
 function Questions({ questions }) {
-
   console.log(questions);
   return (
-    <div className="container">
+    <div>
       <div className="mt-55 mb-55">
         {questions.map((question, index) => (
           <div key={index} className="question__body mt-55">
@@ -35,21 +34,27 @@ function Questions({ questions }) {
             {question.type === 'single_choice' && (
               <SingleChoiceReview
                 answers={question.answers}
-                selectedAnswer={question.answers.filter(answer => answer.isCorrect).map(answer => answer.id)}
+                selectedAnswer={question.answers
+                  .filter((answer) => answer.isCorrect)
+                  .map((answer) => answer.id)}
                 questionId={question.id}
               />
             )}
             {question.type === 'multiple_choices' && (
               <MultipleChoicesReview
                 answers={question.answers}
-                selectedAnswer={question.answers.filter(answer => answer.isCorrect).map(answer => answer.id)}
+                selectedAnswer={question.answers
+                  .filter((answer) => answer.isCorrect)
+                  .map((answer) => answer.id)}
                 questionId={question.id}
               />
             )}
             {question.type === 'matching' && (
               <MatchPairsReview
                 answers={question.answers}
-                selectedAnswer={question.answers.filter(answer => answer.isCorrect).map(answer => answer.id)}
+                selectedAnswer={question.answers
+                  .filter((answer) => answer.isCorrect)
+                  .map((answer) => answer.id)}
               />
             )}
           </div>
