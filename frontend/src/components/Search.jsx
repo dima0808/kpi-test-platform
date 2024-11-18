@@ -3,7 +3,7 @@ import { useState } from 'react';
 import searchImg from '../assets/icons/search.svg';
 import deleteImg from '../assets/icons/delete.svg';
 
-function Search({ onSearch }) {
+function Search({ onSearch, isTest = true }) {
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = (e) => {
@@ -24,7 +24,7 @@ function Search({ onSearch }) {
         onChange={handleSearch}
         value={searchValue}
         type="text"
-        placeholder="search test..."
+        placeholder={`search ${isTest ? 'test' : 'collection'}...`}
         className="search__input"
       />
       {searchValue && (

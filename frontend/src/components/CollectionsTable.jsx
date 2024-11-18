@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Header from './Header';
 import NotFoundTest from './NotFoundTest';
-import {deleteCollectionByName, getAllCollections} from "../utils/http";
-import Cookies from "js-cookie";
-import DropdownMenu from "./DropdownMenu";
-
+import { deleteCollectionByName, getAllCollections } from '../utils/http';
+import Cookies from 'js-cookie';
+import CollectionRow from './CollectionRow';
 
 const CollectionsTable = () => {
   const [collections, setCollections] = useState([]);
@@ -25,27 +24,29 @@ const CollectionsTable = () => {
     setSelectAll(!selectAll);
   };
 
-    const handleDeleteCollection = async (name) => {
-      const token = Cookies.get('token');
-      try {
-        await deleteCollectionByName(name, token);
-        setCollections(collections.filter((collection) => collection.name !== name));
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const handleDeleteCollection = async (name) => {
+    const token = Cookies.get('token');
+    try {
+      await deleteCollectionByName(name, token);
+      setCollections(collections.filter((collection) => collection.name !== name));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  //   const deleteSelectedTests = async () => {
-  //     const token = Cookies.get('token');
-  //     try {
-  //       await Promise.all(selectedTests.map((id) => deleteTestById(id, token)));
-  //       setTests(tests.filter((test) => !selectedTests.includes(test.id)));
-  //       setSelectedTests([]);
-  //       setSelectAll(false);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+  const deleteSelectedCollections = async () => {
+    const token = Cookies.get('token');
+    try {
+      await Promise.all(selectedCollections.map((name) => deleteCollectionByName(name, token)));
+      setCollections(
+        collections.filter((collection) => !selectedCollections.includes(collection.name)),
+      );
+      setSelectedCollections([]);
+      setSelectAll(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -54,12 +55,17 @@ const CollectionsTable = () => {
       .catch((error) => console.error(error));
   }, []);
 
+  console.log(collections);
+  console.log(selectedCollections);
+  console.log(selectAll);
+
   return (
     <div className="tests-table">
       <Header
         title={'Collections'}
         onSearch={handleSearch}
-        // deleteSelectedTests={deleteSelectedTests}
+        deleteSelectedTests={deleteSelectedCollections}
+        isTest={false}
       />
       <div className="session-table">
         {filteredCollections.length === 0 ? (
@@ -77,22 +83,24 @@ const CollectionsTable = () => {
                 <label htmlFor="selectAll"></label>
               </div>
               <div className="session-table__header-title">Title</div>
-              <div className="session-table__header-start-date">Questions count</div>
+              <div className="session-table__header-start-date transparent">Start date</div>
+              <div className="session-table__header-end-date transparent">End date</div>
+              <div className="session-table__header-status transparent">Status</div>
+              <div className="session-table__header-sessions">Questions</div>
               <div className="session-table__header-actions">Actions</div>
             </div>
             <div className="session-table__body">
               {filteredCollections.map((collection) => (
-                <div key={collection.id}>
-                  <div>
-                    <h2>{collection.name}</h2>
-                  </div>
-                  <div>
-                    {collection.questionsCount}
-                  </div>
-                  <div>
-                    <DropdownMenu id={collection.name} onDelete={handleDeleteCollection} isTest={false} />
-                  </div>
-                </div>
+                <CollectionRow
+                  key={collection.id}
+                  id={collection.id}
+                  name={collection.name}
+                  questionsCount={collection.questionsCount}
+                  selectAll={selectAll}
+                  onDelete={handleDeleteCollection}
+                  setSelectedCollections={setSelectedCollections}
+                  isTest={false}
+                />
               ))}
             </div>
           </>

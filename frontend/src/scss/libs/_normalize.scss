@@ -95,7 +95,15 @@ a {
 }
 
 .border-saved {
-    border: 3px solid $blue-dark !important;
+  border: 3px solid $blue-dark !important;
+}
+
+.transparent {
+  color: transparent !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
 }
 
 @mixin noselect {

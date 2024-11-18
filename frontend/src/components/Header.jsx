@@ -6,7 +6,7 @@ import Tests from '../assets/icons/big-tests.svg';
 import Collections from '../assets/icons/big-collections.svg';
 import { useLocation } from 'react-router-dom';
 
-function Header({ title, deleteSelectedTests, onSearch }) {
+function Header({ title, deleteSelectedTests, onSearch, isTest }) {
   const location = useLocation();
 
   return (
@@ -21,7 +21,7 @@ function Header({ title, deleteSelectedTests, onSearch }) {
       </div>
       <div className="tests__tools">
         <HeaderDropdownMenu deleteSelectedTests={deleteSelectedTests} />
-        <Search onSearch={onSearch} />
+        <Search onSearch={onSearch} isTest={isTest} />
       </div>
     </div>
   );
