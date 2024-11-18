@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { truncateText } from '../utils/truncateText.js';
 
 import questionsImg from '../assets/icons/questionCount.svg';
 import DropdownMenu from './DropdownMenu';
@@ -42,7 +43,7 @@ const CollectionRow = ({
         <input type="checkbox" checked={isSelected} onChange={handleCheckboxChange} id={id} />
         <label htmlFor={id}></label>
       </div>
-      <div className="session-row__title">{name}</div>
+      <div className="session-row__title">{truncateText(name, 24)}</div>
       <div className="session-row__dates">
         <div className="session-row__start-date"></div>
         <div className="session-row__divider"></div>

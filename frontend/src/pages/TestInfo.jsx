@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaCopy } from 'react-icons/fa';
 import {
   getFinishedSessionsByTestId,
   getFinishedSessionsByTestIdInCsv,
@@ -18,6 +19,8 @@ function TestInfo() {
   const [testFinishedSessions, setTestFinishedSessions] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
+  const [isQuestionsVisible, setIsQuestionsVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
   const testLink = `http://${clientIP}/${id}`;
 
   useEffect(() => {
@@ -34,7 +37,10 @@ function TestInfo() {
   }, [id]);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(testLink);
+    navigator.clipboard.writeText(testLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   if (error) return <div>{error.message}</div>;
@@ -48,7 +54,8 @@ function TestInfo() {
         <div className="test-info__link">
           <input type="text" value={testLink} readOnly className="test-info__link-input" />
           <button onClick={handleCopyLink} className="test-info__copy-button">
-            Copy Link
+            <FaCopy className="test-info__copy-icon" />
+            {copied ? 'Copied!' : 'Copy Link'}
           </button>
         </div>
       </div>
@@ -63,7 +70,14 @@ function TestInfo() {
         <p>Finished Sessions: {testData.finishedSessions}</p>
       </div>
 
-      {/* <Questions questions={questions} /> */}
+      <div className="test-info__show">
+        <button
+          className="test-info__import-button"
+          onClick={() => setIsQuestionsVisible(!isQuestionsVisible)}>
+          {isQuestionsVisible ? 'Hide Questions' : 'Show Questions'}
+        </button>
+        {isQuestionsVisible && <Questions questions={questions} />}
+      </div>
 
       <button
         onClick={() => getFinishedSessionsByTestIdInCsv(testData.name, id, Cookies.get('token'))}

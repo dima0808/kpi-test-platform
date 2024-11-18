@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   createTest,
   getAllCollections,
   getQuestionsByTestId,
   getSamplesByTestId,
-  getTestById
+  getTestById,
 } from '../utils/http';
-import Cookies from "js-cookie";
-import {useLocation, useNavigate} from "react-router-dom";
-import Questions from "../components/creation/Questions";
+import Cookies from 'js-cookie';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Questions from '../components/creation/Questions';
 
 function TestCreation() {
   const location = useLocation();
@@ -18,7 +18,7 @@ function TestCreation() {
     deadline: '',
     minutesToComplete: 10,
     questions: [],
-    samples: []
+    samples: [],
   });
   const [collections, setCollections] = useState([]);
   const [errors, setErrors] = useState({});
@@ -29,42 +29,51 @@ function TestCreation() {
     const cloneId = params.get('cloneId');
     if (cloneId) {
       const token = Cookies.get('token');
-      getTestById(cloneId, token).then((testData) => {
-        getQuestionsByTestId(cloneId, token).then((questionsData) => {
-          getSamplesByTestId(cloneId, token).then((samplesData) => {
-            setTest({
-              name: testData.name,
-              openDate: testData.openDate,
-              deadline: testData.deadline,
-              minutesToComplete: testData.minutesToComplete,
-              questions: questionsData.questions.map((question) => ({
-                content: question.content,
-                points: question.points,
-                type: question.type,
-                answers: question.type === 'matching' ?
-                  question.answers
-                    .filter(answer => answer.isCorrect)
-                    .map((answer) => ({
-                      leftOption: answer.leftOption,
-                      rightOption: answer.rightOption
-                    })) : question.answers,
-                collection: '',
-                isSaved: false
-              })),
-              samples: samplesData.samples.map((sample) => ({
-                collectionName: sample.collectionName,
-                points: sample.points,
-                questionsCount: sample.questionsCount
-              }))
-            });
-          }).catch((error) => console.error('Error fetching collections:', error));
-        }).catch((error) => console.error('Error fetching questions:', error));
-      }).catch((error) => console.error('Error fetching test data:', error));
+      getTestById(cloneId, token)
+        .then((testData) => {
+          getQuestionsByTestId(cloneId, token)
+            .then((questionsData) => {
+              getSamplesByTestId(cloneId, token)
+                .then((samplesData) => {
+                  setTest({
+                    name: testData.name,
+                    openDate: testData.openDate,
+                    deadline: testData.deadline,
+                    minutesToComplete: testData.minutesToComplete,
+                    questions: questionsData.questions.map((question) => ({
+                      content: question.content,
+                      points: question.points,
+                      type: question.type,
+                      answers:
+                        question.type === 'matching'
+                          ? question.answers
+                              .filter((answer) => answer.isCorrect)
+                              .map((answer) => ({
+                                leftOption: answer.leftOption,
+                                rightOption: answer.rightOption,
+                              }))
+                          : question.answers,
+                      collection: '',
+                      isSaved: false,
+                    })),
+                    samples: samplesData.samples.map((sample) => ({
+                      collectionName: sample.collectionName,
+                      points: sample.points,
+                      questionsCount: sample.questionsCount,
+                    })),
+                  });
+                })
+                .catch((error) => console.error('Error fetching collections:', error));
+            })
+            .catch((error) => console.error('Error fetching questions:', error));
+        })
+        .catch((error) => console.error('Error fetching test data:', error));
     }
   }, [location.search]);
 
   useEffect(() => {
-    getAllCollections().then((data) => setCollections(data.collections))
+    getAllCollections()
+      .then((data) => setCollections(data.collections))
       .catch((error) => console.error('Error fetching collections:', error));
   }, []);
 
@@ -84,9 +93,9 @@ function TestCreation() {
           type: 'multiple_choices',
           answers: [],
           collection: '',
-          isSaved: false
-        }
-      ]
+          isSaved: false,
+        },
+      ],
     });
   };
 
@@ -98,9 +107,9 @@ function TestCreation() {
         {
           collectionName: collections[0]?.name || '',
           points: 0,
-          questionsCount: 0
-        }
-      ]
+          questionsCount: 0,
+        },
+      ],
     });
   };
 
@@ -108,21 +117,21 @@ function TestCreation() {
     const samples = [...test.samples];
     samples.splice(collectionIndex, 1);
     setTest({ ...test, samples });
-  }
+  };
 
   const handleCollectionChange = (collectionIndex, e) => {
     const { name, value } = e.target;
     const samples = [...test.samples];
     samples[collectionIndex][name] = value;
     setTest({ ...test, samples });
-  }
+  };
 
   const handleCollectionNameChange = (collectionIndex, e) => {
     const { value } = e.target;
     const samples = [...test.samples];
     samples[collectionIndex].collectionName = value;
     setTest({ ...test, samples });
-  }
+  };
 
   const validateField = (key, value) => {
     let error = '';
@@ -137,15 +146,14 @@ function TestCreation() {
     } else if (key === 'minutesToComplete' && (!value || value <= 0)) {
       error = 'Minutes to complete must be greater than 0.';
     }
-    setErrors((prevErrors) =>
-      ({ ...prevErrors, [key]: error })
-    );
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: error }));
     return error === '';
   };
 
   const handleSubmit = async () => {
     const token = Cookies.get('token');
-    createTest(test, token).then(() => navigate('/tests'))
+    createTest(test, token)
+      .then(() => navigate('/tests'))
       .catch((error) => {
         setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
       });
@@ -202,7 +210,9 @@ function TestCreation() {
           onBlur={(e) => validateField('minutesToComplete', e.target.value)}
           className={errors.minutesToComplete ? 'error-border' : ''}
         />
-        {errors.minutesToComplete && <div className="error-message">{errors.minutesToComplete}</div>}
+        {errors.minutesToComplete && (
+          <div className="error-message">{errors.minutesToComplete}</div>
+        )}
       </div>
       <Questions
         instance={test}
@@ -220,10 +230,11 @@ function TestCreation() {
                 <select
                   name="collectionName"
                   value={sample.collectionName}
-                  onChange={(e) => handleCollectionNameChange(sIndex, e)}
-                >
+                  onChange={(e) => handleCollectionNameChange(sIndex, e)}>
                   {collections.map((collection) => (
-                    <option key={collection.id} value={collection.name}>{collection.name}</option>
+                    <option key={collection.id} value={collection.name}>
+                      {collection.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -252,7 +263,9 @@ function TestCreation() {
                   className={errors[`collection-questions-count-${sIndex}`] ? 'error-border' : ''}
                 />
                 {errors[`collection-questions-count-${sIndex}-0`] && (
-                  <div className="error-message">{errors[`collection-questions-count-${sIndex}-0`]}</div>
+                  <div className="error-message">
+                    {errors[`collection-questions-count-${sIndex}-0`]}
+                  </div>
                 )}
               </div>
             </div>
@@ -268,9 +281,12 @@ function TestCreation() {
         <button onClick={handleSubmit}>Create Test</button>
       </div>
 
-      {errors.submit && errors.submit.split(',').map((error, index) => (
-        <div key={index} className="error-message">{error}</div>
-      ))}
+      {errors.submit &&
+        errors.submit.split(',').map((error, index) => (
+          <div key={index} className="error-message">
+            {error}
+          </div>
+        ))}
     </div>
   );
 }

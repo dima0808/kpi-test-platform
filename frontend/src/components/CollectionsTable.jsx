@@ -69,7 +69,7 @@ const CollectionsTable = () => {
       />
       <div className="session-table">
         {filteredCollections.length === 0 ? (
-          <NotFoundTest />
+          <NotFoundTest isTest={false} />
         ) : (
           <>
             <div className="session-table__header">

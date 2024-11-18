@@ -1,9 +1,8 @@
-import React from "react";
-import Cookies from "js-cookie";
-import {addQuestionToCollection} from "../../utils/http";
+import React from 'react';
+import Cookies from 'js-cookie';
+import { addQuestionToCollection } from '../../utils/http';
 
 function Questions({ instance, collections, errors, setInstance, setErrors }) {
-
   const handleDeleteQuestion = (questionIndex) => {
     const questions = [...instance.questions];
     questions.splice(questionIndex, 1);
@@ -25,26 +24,30 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
     questions[questionIndex].collection = value;
     questions[questionIndex].isSaved = false;
     setInstance({ ...instance, questions });
-  }
+  };
 
   const handleAddQuestionToCollection = (questionIndex) => {
     const questions = [...instance.questions];
     const question = questions[questionIndex];
     const token = Cookies.get('token');
-    if (!validateField('question-collection', question.collection, questionIndex) ||
-      !validateField('question-saved', question.isSaved, questionIndex)) {
+    if (
+      !validateField('question-collection', question.collection, questionIndex) ||
+      !validateField('question-saved', question.isSaved, questionIndex)
+    ) {
       return;
     }
-    addQuestionToCollection(question, question.collection, token).then(() => {
-      questions[questionIndex].isSaved = true;
-      if (instance.samples.some(sample => sample.collectionName === question.collection)) {
-        questions.splice(questionIndex, 1);
-      }
-      setInstance({ ...instance, questions });
-    }).catch((error) => {
-      setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
-    });
-  }
+    addQuestionToCollection(question, question.collection, token)
+      .then(() => {
+        questions[questionIndex].isSaved = true;
+        if (instance.samples.some((sample) => sample.collectionName === question.collection)) {
+          questions.splice(questionIndex, 1);
+        }
+        setInstance({ ...instance, questions });
+      })
+      .catch((error) => {
+        setErrors((prevErrors) => ({ ...prevErrors, submit: error.message }));
+      });
+  };
 
   const handleQuestionTypeChange = (questionIndex, e) => {
     const { value } = e.target;
@@ -53,7 +56,10 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
     if (currentType === 'matching' || value === 'matching') {
       questions[questionIndex].answers = [];
     } else {
-      questions[questionIndex].answers = questions[questionIndex].answers.map(answer => ({ ...answer, isCorrect: false }));
+      questions[questionIndex].answers = questions[questionIndex].answers.map((answer) => ({
+        ...answer,
+        isCorrect: false,
+      }));
     }
     questions[questionIndex].type = value;
     questions[questionIndex].collection = '';
@@ -64,7 +70,10 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
   const handleAddAnswer = (questionIndex) => {
     const questions = [...instance.questions];
     const question = questions[questionIndex];
-    const newAnswer = question.type === 'matching' ? { leftOption: '', rightOption: '' } : { content: '', isCorrect: false };
+    const newAnswer =
+      question.type === 'matching'
+        ? { leftOption: '', rightOption: '' }
+        : { content: '', isCorrect: false };
     question.answers.push(newAnswer);
     questions[questionIndex].collection = '';
     questions[questionIndex].isSaved = false;
@@ -97,9 +106,10 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
     } else if (key === 'question-saved' && value === true) {
       error = 'Question is already saved.';
     }
-    setErrors((prevErrors) =>
-      ({ ...prevErrors, [index1 !== -1 ? key + '-' + index1 + '-' + index2 : key]: error })
-    );
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [index1 !== -1 ? key + '-' + index1 + '-' + index2 : key]: error,
+    }));
     return error === '';
   };
 
@@ -110,7 +120,7 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
     if (question.type === 'single_choice' && name === 'isCorrect') {
       question.answers = question.answers.map((answer, index) => ({
         ...answer,
-        isCorrect: index === answerIndex
+        isCorrect: index === answerIndex,
       }));
     } else {
       question.answers[answerIndex][name] = value;
@@ -123,30 +133,33 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
   return (
     <div className="questions-container">
       {instance.questions.map((question, qIndex) => (
-        <div className={"question " + (question.isSaved ? " border-saved" : "")} key={qIndex}>
+        <div className={'question ' + (question.isSaved ? ' border-saved' : '')} key={qIndex}>
           <div className="question-form">
-            {collections && <div>
-              <label>Save to collection:</label>
-              <select
-                name="collection"
-                value={question.collection}
-                onChange={(e) => handleQuestionCollectionChange(qIndex, e)}
-              >
-                <option value=''>None</option>
-                {collections.map((collection) => (
-                  <option key={collection.id} value={collection.name}>{collection.name}</option>
-                ))}
-              </select>
-              <button type="button" onClick={() => handleAddQuestionToCollection(qIndex)}>
-                Save into collection
-              </button>
-              {errors[`question-collection-${qIndex}-0`] && (
-                <div className="error-message">{errors[`question-collection-${qIndex}-0`]}</div>
-              )}
-              {errors[`question-saved-${qIndex}-0`] && question.isSaved && (
-                <div className="error-message">{errors[`question-saved-${qIndex}-0`]}</div>
-              )}
-            </div>}
+            {collections && (
+              <div>
+                <label>Save to collection:</label>
+                <select
+                  name="collection"
+                  value={question.collection}
+                  onChange={(e) => handleQuestionCollectionChange(qIndex, e)}>
+                  <option value="">None</option>
+                  {collections.map((collection) => (
+                    <option key={collection.id} value={collection.name}>
+                      {collection.name}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" onClick={() => handleAddQuestionToCollection(qIndex)}>
+                  Save into collection
+                </button>
+                {errors[`question-collection-${qIndex}-0`] && (
+                  <div className="error-message">{errors[`question-collection-${qIndex}-0`]}</div>
+                )}
+                {errors[`question-saved-${qIndex}-0`] && question.isSaved && (
+                  <div className="error-message">{errors[`question-saved-${qIndex}-0`]}</div>
+                )}
+              </div>
+            )}
             <div>
               <label>Question Content:</label>
               <input
@@ -180,8 +193,7 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
               <select
                 name="type"
                 value={question.type}
-                onChange={(e) => handleQuestionTypeChange(qIndex, e)}
-              >
+                onChange={(e) => handleQuestionTypeChange(qIndex, e)}>
                 <option value="multiple_choices">Multiple Choices</option>
                 <option value="single_choice">Single Choice</option>
                 <option value="matching">Matching</option>
@@ -201,11 +213,17 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
                         name="leftOption"
                         value={answer.leftOption}
                         onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
-                        onBlur={(e) => validateField('question-answer-left', e.target.value, qIndex, aIndex)}
-                        className={errors[`question-answer-left-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        onBlur={(e) =>
+                          validateField('question-answer-left', e.target.value, qIndex, aIndex)
+                        }
+                        className={
+                          errors[`question-answer-left-${qIndex}-${aIndex}`] ? 'error-border' : ''
+                        }
                       />
                       {errors[`question-answer-left-${qIndex}-${aIndex}`] && (
-                        <div className="error-message">{errors[`question-answer-left-${qIndex}-${aIndex}`]}</div>
+                        <div className="error-message">
+                          {errors[`question-answer-left-${qIndex}-${aIndex}`]}
+                        </div>
                       )}
                     </div>
                     <div>
@@ -215,11 +233,17 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
                         name="rightOption"
                         value={answer.rightOption}
                         onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
-                        onBlur={(e) => validateField('question-answer-right', e.target.value, qIndex, aIndex)}
-                        className={errors[`question-answer-right-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        onBlur={(e) =>
+                          validateField('question-answer-right', e.target.value, qIndex, aIndex)
+                        }
+                        className={
+                          errors[`question-answer-right-${qIndex}-${aIndex}`] ? 'error-border' : ''
+                        }
                       />
                       {errors[`question-answer-right-${qIndex}-${aIndex}`] && (
-                        <div className="error-message">{errors[`question-answer-right-${qIndex}-${aIndex}`]}</div>
+                        <div className="error-message">
+                          {errors[`question-answer-right-${qIndex}-${aIndex}`]}
+                        </div>
                       )}
                     </div>
                   </>
@@ -232,11 +256,17 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
                         name="content"
                         value={answer.content}
                         onChange={(e) => handleAnswerChange(qIndex, aIndex, e)}
-                        onBlur={(e) => validateField('question-answer', e.target.value, qIndex, aIndex)}
-                        className={errors[`question-answer-${qIndex}-${aIndex}`] ? 'error-border' : ''}
+                        onBlur={(e) =>
+                          validateField('question-answer', e.target.value, qIndex, aIndex)
+                        }
+                        className={
+                          errors[`question-answer-${qIndex}-${aIndex}`] ? 'error-border' : ''
+                        }
                       />
                       {errors[`question-answer-${qIndex}-${aIndex}`] && (
-                        <div className="error-message">{errors[`question-answer-${qIndex}-${aIndex}`]}</div>
+                        <div className="error-message">
+                          {errors[`question-answer-${qIndex}-${aIndex}`]}
+                        </div>
                       )}
                     </div>
                     <div>
@@ -246,30 +276,38 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
                           type="radio"
                           name={`isCorrect-${qIndex}`}
                           checked={answer.isCorrect}
-                          onChange={(e) => handleAnswerChange(qIndex, aIndex, {
-                            target: {
-                              name: 'isCorrect',
-                              value: e.target.checked
-                            }
-                          })}
+                          style={{ width: '100%' }}
+                          onChange={(e) =>
+                            handleAnswerChange(qIndex, aIndex, {
+                              target: {
+                                name: 'isCorrect',
+                                value: e.target.checked,
+                              },
+                            })
+                          }
                         />
                       ) : (
                         <input
                           type="checkbox"
                           name="isCorrect"
                           checked={answer.isCorrect}
-                          onChange={(e) => handleAnswerChange(qIndex, aIndex, {
-                            target: {
-                              name: 'isCorrect',
-                              value: e.target.checked
-                            }
-                          })}
+                          style={{ width: '100%' }}
+                          onChange={(e) =>
+                            handleAnswerChange(qIndex, aIndex, {
+                              target: {
+                                name: 'isCorrect',
+                                value: e.target.checked,
+                              },
+                            })
+                          }
                         />
                       )}
                     </div>
                   </>
                 )}
-                <button type="button" onClick={() => handleDeleteAnswer(qIndex, aIndex)}>Delete Answer</button>
+                <button type="button" onClick={() => handleDeleteAnswer(qIndex, aIndex)}>
+                  Delete Answer
+                </button>
               </div>
             ))}
           </div>
@@ -279,7 +317,7 @@ function Questions({ instance, collections, errors, setInstance, setErrors }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export default Questions;
