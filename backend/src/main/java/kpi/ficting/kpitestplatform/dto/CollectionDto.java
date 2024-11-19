@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CollectionDto {
 
   @NotBlank(message = "Collection name is mandatory")
-  @Size(min = 1, max = 100, message = "Collection name must be between 3 and 100 characters")
+  @Size(min = 1, max = 100, message = "Collection name must be between 1 and 100 characters")
   private String name;
 
   @Valid

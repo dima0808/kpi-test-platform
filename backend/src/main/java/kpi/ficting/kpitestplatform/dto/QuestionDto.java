@@ -19,7 +19,7 @@ public class QuestionDto {
 
   private Long id;
 
-  @Size(min = 3, max = 250, message = "Question must be between 3 and 250 characters")
+  @Size(min = 1, max = 250, message = "Question must be between 1 and 250 characters")
   private String content;
 
   @NotNull(message = "Points is mandatory")
