@@ -1,1 +1,2 @@
-export const IP = 'localhost:8080';
+export const clientIP = 'localhost:3000';
+export const serverIP = 'localhost:8080';

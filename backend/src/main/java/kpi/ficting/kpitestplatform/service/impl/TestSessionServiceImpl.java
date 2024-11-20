@@ -88,6 +88,9 @@ public class TestSessionServiceImpl implements TestSessionService {
           testSession.getStudentGroup(), testSession.getStudentName());
     }
     Test test = testService.findById(testId);
+    if (test.getOpenDate().isAfter(LocalDateTime.now())) {
+      throw new IllegalStateException("Test is not open yet");
+    }
     List<ResponseEntry> responses = new ArrayList<>();
     addTestQuestions(responses, test.getQuestions(), testSession);
     addSampleQuestions(responses, test.getSamples(), testSession);

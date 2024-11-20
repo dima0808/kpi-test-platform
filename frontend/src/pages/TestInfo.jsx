@@ -1,30 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import {getFinishedSessionsByTestId, getFinishedSessionsByTestIdInCsv, getTestById} from '../utils/http';
-import { useParams } from 'react-router-dom';
+import { FaCopy } from 'react-icons/fa';
+import {
+  getFinishedSessionsByTestId,
+  getFinishedSessionsByTestIdInCsv,
+  getQuestionsByTestId,
+  getTestById,
+} from '../utils/http';
+import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import {calculateTimeDifference} from "../utils/timeUtils";
+import { calculateTimeDifference } from '../utils/timeUtils';
+import { clientIP } from '../utils/constraints';
+import Questions from '../components/info/Questions';
 
 function TestInfo() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [testData, setTestData] = useState(null);
   const [testFinishedSessions, setTestFinishedSessions] = useState([]);
-  const testLink = `http://localhost:3000/${id}`;
+  const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState(null);
+  const [isQuestionsVisible, setIsQuestionsVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const testLink = `http://${clientIP}/${id}`;
 
   useEffect(() => {
     const token = Cookies.get('token');
     getTestById(id, token)
       .then(setTestData)
-      .catch((error) => console.error('Error fetching test data: ', error));
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
+    getQuestionsByTestId(id, token)
+      .then((data) => setQuestions(data.questions))
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
     getFinishedSessionsByTestId(id, token)
       .then((data) => setTestFinishedSessions(data.sessions))
-      .catch((error) => console.error('Error fetching finished sessions: ', error));
+      .catch((error) => setError({ message: error.message || 'An error occurred' }));
   }, [id]);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(testLink);
+    navigator.clipboard.writeText(testLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
-  if (!testData) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+  else if (!testData) return <div>Loading...</div>;
 
   return (
     <div className="test-info">
@@ -34,7 +54,8 @@ function TestInfo() {
         <div className="test-info__link">
           <input type="text" value={testLink} readOnly className="test-info__link-input" />
           <button onClick={handleCopyLink} className="test-info__copy-button">
-            Copy Link
+            <FaCopy className="test-info__copy-icon" />
+            {copied ? 'Copied!' : 'Copy Link'}
           </button>
         </div>
       </div>
@@ -49,10 +70,18 @@ function TestInfo() {
         <p>Finished Sessions: {testData.finishedSessions}</p>
       </div>
 
+      <div className="test-info__show">
+        <button
+          className="test-info__import-button"
+          onClick={() => setIsQuestionsVisible(!isQuestionsVisible)}>
+          {isQuestionsVisible ? 'Hide Questions' : 'Show Questions'}
+        </button>
+        {isQuestionsVisible && <Questions questions={questions} />}
+      </div>
+
       <button
         onClick={() => getFinishedSessionsByTestIdInCsv(testData.name, id, Cookies.get('token'))}
-        className="test-info__import-button"
-      >
+        className="test-info__import-button">
         Export
       </button>
       <table className="test-info__table">
@@ -73,7 +102,15 @@ function TestInfo() {
               <td>{session.mark}</td>
               <td>{calculateTimeDifference(session.startedAt, session.finishedAt)}</td>
               <td>
-                <button className="test-info__details-button">Details</button>
+                <button
+                  onClick={() =>
+                    navigate(
+                      `/session-details/${id}?credentials=${session.studentGroup}:${session.studentName}`,
+                    )
+                  }
+                  className="test-info__details-button">
+                  Details
+                </button>
               </td>
             </tr>
           ))}

@@ -3,7 +3,15 @@ import SingleChoice from '../components/SingleChoice';
 import MultipleChoices from './MultipleChoices';
 import MatchPairs from '../components/MatchPairs';
 
-function Question({ test, handleSaveAnswer, handleFinishTest, testSession, question }) {
+function Question({
+  test,
+  handleSaveAnswer,
+  handleFinishTest,
+  testSession,
+  question,
+  error,
+  clearError,
+}) {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [endTime, setEndTime] = useState(null);
@@ -11,7 +19,9 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
   useEffect(() => {
     if (!endTime) {
       const calculateEndTime = () => {
-        const deadline = new Date(test.deadline.replace(/(\d{2})\.(\d{2})\.(\d{4})/, '$3-$2-$1')).getTime();
+        const deadline = new Date(
+          test.deadline.replace(/(\d{2})\.(\d{2})\.(\d{4})/, '$3-$2-$1'),
+        ).getTime();
         const now = new Date().getTime();
         const timeToDeadline = (deadline - now) / 1000; // in seconds
         const timeToComplete = test.minutesToComplete * 60; // in seconds
@@ -34,12 +44,16 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
 
   const handleNext = () => {
     handleSaveAnswer(selectedAnswers);
+    clearError();
   };
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
+    if (hours === 0) {
+      return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
@@ -47,18 +61,22 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
     return <div>Loading...</div>;
   }
 
+  console.log('question', error);
+
   return (
     <div className="container">
-      <div className="question__body">
+      <div className={`question__body ${error ? 'border-error' : ''}`}>
         <div className="question__timer">
           <div className="question__counter">
             {testSession.currentQuestionIndex + 1}/{test.questionsCount}
           </div>
-          {timeLeft !== 0 && <div className={`timer__count ${timeLeft <= 60 ? 'timer__red' : ''}`}>
-            {formatTime(timeLeft)}
-          </div>}
+          {timeLeft !== 0 && (
+            <div className={`timer__count ${timeLeft <= 60 ? 'timer__red' : ''}`}>
+              {formatTime(timeLeft)}
+            </div>
+          )}
         </div>
-        <h1 className="question__type">
+        <h1 className={`question__type ${error ? 'color-error' : ''}`}>
           {(() => {
             switch (question.type) {
               case 'single_choice':
@@ -77,20 +95,19 @@ function Question({ test, handleSaveAnswer, handleFinishTest, testSession, quest
         {question.type === 'single_choice' && (
           <SingleChoice
             answers={question.answers}
-            selectedAnswers={selectedAnswers} setSelectedAnswers={setSelectedAnswers}
+            selectedAnswers={selectedAnswers}
+            setSelectedAnswers={setSelectedAnswers}
           />
         )}
         {question.type === 'multiple_choices' && (
           <MultipleChoices
             answers={question.answers}
-            selectedAnswers={selectedAnswers} setSelectedAnswers={setSelectedAnswers}
+            selectedAnswers={selectedAnswers}
+            setSelectedAnswers={setSelectedAnswers}
           />
         )}
         {question.type === 'matching' && (
-          <MatchPairs
-            answers={question.answers}
-            setSelectedAnswers={setSelectedAnswers}
-          />
+          <MatchPairs answers={question.answers} setSelectedAnswers={setSelectedAnswers} />
         )}
 
         <div className="question__next">

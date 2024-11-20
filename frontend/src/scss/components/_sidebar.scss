@@ -49,7 +49,7 @@
     height: 43px;
     cursor: pointer;
     border-radius: 12px;
-    transition: all 0.3s ease-in-out;
+    background-color: $white;
 
     &:hover {
       opacity: 0.8;
@@ -70,7 +70,7 @@
       }
       p {
         font-size: 22px;
-        color: $blue-dark;
+        color: $black;
         font-weight: 600;
         padding-bottom: 2px;
       }
@@ -78,13 +78,21 @@
 
     &.active {
       background-color: $blue-light;
+
+      & p {
+        color: $blue-dark;
+      }
+
+      &--first {
+        background-color: $blue-dark;
+      }
     }
   }
 }
 
 .logout {
   &__btn {
-    padding-block: 18px;
+    padding-top: 18px;
     padding-left: 20px;
     display: flex;
     width: 100%;
@@ -135,4 +143,8 @@
     cursor: pointer;
     transition: all 0.3s ease-in-out;
   }
+}
+
+.bg-white {
+  background-color: $white !important;
 }

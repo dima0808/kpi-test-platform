@@ -69,6 +69,17 @@
     box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
   }
 
+  @media (max-width: 600px) {
+    &__name,
+    &__field,
+    &__answer {
+      width: 100%;
+      height: auto;
+      font-size: 18px;
+      padding: 10px;
+    }
+  }
+
   &__answer {
     display: flex;
     align-items: center;

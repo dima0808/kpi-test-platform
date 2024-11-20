@@ -18,8 +18,23 @@
   }
 
   &__title {
-    font-size: 62px;
-    font-weight: 500;
+    &--purple {
+      font-size: 62px;
+      font-weight: 500;
+      background: linear-gradient(90deg, #4200c7, #c7006a);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    &--green {
+      font-size: 62px;
+      font-weight: 500;
+      background: linear-gradient(90deg, #00c774, #005dc7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 }
 

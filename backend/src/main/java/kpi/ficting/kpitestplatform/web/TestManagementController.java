@@ -82,7 +82,7 @@ public class TestManagementController {
     } else {
       return ResponseEntity.ok(
           testSessionMapper.toTestSessionDto(testSessionService.findByTestIdAndCredentials(
-              testId, credentials, true), true, false));
+              testId, credentials, true), true, true));
     }
   }
 
@@ -105,6 +105,7 @@ public class TestManagementController {
   }
 
   @PutMapping("{testId}")
+  @Deprecated
   public ResponseEntity<TestInfo> updateTest(@PathVariable UUID testId,
       @RequestBody @Valid TestDto testDto) {
     return ResponseEntity.ok(

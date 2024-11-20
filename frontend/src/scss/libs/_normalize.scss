@@ -60,6 +60,14 @@ body {
   align-items: center;
 }
 
+.mt-55 {
+  margin-top: 55px !important;
+}
+
+.mb-55 {
+  margin-bottom: 55px !important;
+}
+
 a,
 span,
 p,
@@ -84,6 +92,22 @@ h2 {
 
 a {
   text-decoration: none;
+}
+
+.border-saved {
+  box-shadow: 0 0 0 4px $blue-light;
+}
+
+.transparent {
+  color: transparent !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.d-flex {
+  display: flex;
 }
 
 @mixin noselect {

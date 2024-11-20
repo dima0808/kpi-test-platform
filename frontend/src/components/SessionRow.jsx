@@ -1,12 +1,11 @@
 import React from 'react';
 import { useState, useEffect, useCallback } from 'react';
+import { truncateText } from '../utils/truncateText.js';
 
 import DropdownMenu from './DropdownMenu';
 
 import borderBetween from '../assets/icons/brd-between-small.svg';
 import people from '../assets/icons/people.svg';
-import Cookies from "js-cookie";
-import {getFinishedSessionsByTestIdInCsv} from "../utils/http";
 
 const SessionRow = ({
   id,
@@ -77,7 +76,7 @@ const SessionRow = ({
         <input type="checkbox" checked={isSelected} onChange={handleCheckboxChange} id={id} />
         <label htmlFor={id}></label>
       </div>
-      <div className="session-row__title">{name}</div>
+      <div className="session-row__title">{truncateText(name, 24)}</div>
       <div className="session-row__dates">
         <div className="session-row__start-date">
           <span>{openTimePart} UTC+2</span>

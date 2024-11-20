@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import question from '../assets/icons/question.svg';
 import score from '../assets/icons/score.svg';
 import group from '../assets/icons/group.svg';
 import human from '../assets/icons/human.svg';
 import duration from '../assets/icons/duration.svg';
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 function TestPreview({ test, handleStartTest, message }) {
   const studentGroupRef = useRef(null);
@@ -20,7 +20,7 @@ function TestPreview({ test, handleStartTest, message }) {
     if (name && studentNameRef.current) {
       studentNameRef.current.value = name;
     }
-    }, [test]);
+  }, [test]);
 
   const validateForm = () => {
     const group = studentGroupRef.current?.value;
@@ -64,15 +64,15 @@ function TestPreview({ test, handleStartTest, message }) {
         <div className="test__info">
           <ul className="info__list">
             <li className="info__duration">
-              <img src={duration} alt="duration"/>
+              <img src={duration} alt="duration" />
               <span>{formatDuration(test.minutesToComplete)}</span>
             </li>
             <li className="info__question">
-              <img src={question} alt="question"/>
+              <img src={question} alt="question" />
               <span>{test.questionsCount} Questions</span>
             </li>
             <li className="info__score">
-              <img src={score} alt="score"/>
+              <img src={score} alt="score" />
               <span>{test.maxScore} points</span>
             </li>
           </ul>
@@ -81,21 +81,21 @@ function TestPreview({ test, handleStartTest, message }) {
         <form className="test__form" onSubmit={handleSubmit}>
           <div className="test__fields">
             <div className="test__field">
-              <img src={group} alt="group"/>
+              <img src={group} alt="group" />
               <input
                 ref={studentGroupRef}
                 type="text"
-                placeholder="Group: IO-25"
+                placeholder="Група: IO-25"
                 className={errors.group ? 'error-border' : ''}
                 onChange={() => handleInputChange('group')}
               />
             </div>
             <div className="test__field">
-              <img src={human} alt="human" className="test__numan"/>
+              <img src={human} alt="human" className="test__numan" />
               <input
                 ref={studentNameRef}
                 type="text"
-                placeholder="Full Name: Ivan Ivanov"
+                placeholder="ПІБ: Іванов Іван Іванович"
                 className={errors.name ? 'error-border' : ''}
                 onChange={() => handleInputChange('name')}
               />

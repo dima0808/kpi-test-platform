@@ -1,9 +1,15 @@
 .finished {
+  margin-top: 120px;
   padding: 85px 107px;
   background-color: $white;
   max-width: 1030px;
   width: 100%;
   border-radius: 26px;
+
+  &__answer {
+    display: flex;
+    justify-content: end;
+  }
 
   &__check {
     font-size: 28px;
@@ -28,9 +34,4 @@
     padding-bottom: 10px;
     border-bottom: 2px solid $color-table;
   }
-}
-
-.fihished__answer {
-  display: flex;
-  justify-content: end;
 }

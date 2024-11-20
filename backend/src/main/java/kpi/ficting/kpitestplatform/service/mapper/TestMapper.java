@@ -2,6 +2,7 @@ package kpi.ficting.kpitestplatform.service.mapper;
 
 import static kpi.ficting.kpitestplatform.util.TestUtils.getFinishedSessions;
 import static kpi.ficting.kpitestplatform.util.TestUtils.getMaxScore;
+import static kpi.ficting.kpitestplatform.util.TestUtils.getQuestionsCount;
 import static kpi.ficting.kpitestplatform.util.TestUtils.getStartedSessions;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public interface TestMapper {
         .openDate(test.getOpenDate())
         .deadline(test.getDeadline())
         .minutesToComplete(test.getMinutesToComplete())
-        .maxScore(getMaxScore(test.getQuestions()))
-        .questionsCount(test.getQuestions().size())
+        .maxScore(getMaxScore(test.getQuestions(), test.getSamples()))
+        .questionsCount(getQuestionsCount(test.getQuestions(), test.getSamples()))
         .startedSessions(isAdmin ? getStartedSessions(test.getSessions()) : null)
         .finishedSessions(isAdmin ? getFinishedSessions(test.getSessions()) : null)
         .build();

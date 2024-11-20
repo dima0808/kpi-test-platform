@@ -55,7 +55,7 @@ const TestsTable = () => {
 
   return (
     <div className="tests-table">
-      <Header onSearch={handleSearch} deleteSelectedTests={deleteSelectedTests} />
+      <Header title={'Tests'} onSearch={handleSearch} deleteSelectedTests={deleteSelectedTests} />
       <div className="session-table">
         {filteredTests.length === 0 ? (
           <NotFoundTest />

@@ -6,6 +6,8 @@ import kpi.ficting.kpitestplatform.domain.Question;
 
 public interface QuestionService {
 
+  List<Question> createAll(List<Question> questions);
+
   List<Question> findByTestId(UUID testId);
 
   List<Question> findByCollectionName(String collectionName);
