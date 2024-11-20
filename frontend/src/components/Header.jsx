@@ -17,7 +17,9 @@ function Header({ title, deleteSelectedTests, onSearch, isTest }) {
           src={location.pathname === '/tests' ? Tests : Collections}
           alt="foto"
         />
-        <h1 className="tests__title">{title}</h1>
+        <h1 className={`tests__title--${location.pathname === '/tests' ? 'green' : 'purple'}`}>
+          {title}
+        </h1>
       </div>
       <div className="tests__tools">
         <HeaderDropdownMenu deleteSelectedTests={deleteSelectedTests} />

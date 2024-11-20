@@ -95,7 +95,7 @@ a {
 }
 
 .border-saved {
-  border: 3px solid $blue-dark !important;
+  box-shadow: 0 0 0 4px $blue-light;
 }
 
 .transparent {

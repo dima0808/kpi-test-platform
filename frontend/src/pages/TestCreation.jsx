@@ -9,6 +9,8 @@ import {
 import Cookies from 'js-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Questions from '../components/creation/Questions';
+import Trash from '../assets/icons/trash.svg';
+import { FaPlus, FaFolderPlus, FaCheck } from 'react-icons/fa';
 
 function TestCreation() {
   const location = useLocation();
@@ -160,72 +162,76 @@ function TestCreation() {
   };
 
   return (
-    <div className="test-creation">
-      <h2>Create a Test</h2>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={test.name}
-          onChange={handleInputChange}
-          onBlur={(e) => validateField('testName', e.target.value)}
-          className={errors.testName ? 'error-border' : ''}
-        />
-        {errors.testName && <div className="error-message">{errors.testName}</div>}
+    <>
+      <div className="test-creation">
+        <h2>Create a Test</h2>
+        <div className="test-creation__name">
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={test.name}
+            onChange={handleInputChange}
+            onBlur={(e) => validateField('testName', e.target.value)}
+            className={errors.testName ? 'error-border' : ''}
+          />
+          {errors.testName && <div className="error-message">{errors.testName}</div>}
+        </div>
+        <div>
+          <label>Open Date:</label>
+          <input
+            type="text"
+            name="openDate"
+            placeholder="e.g., 11.11.2024 12:35"
+            value={test.openDate}
+            onChange={handleInputChange}
+            onBlur={(e) => validateField('openDate', e.target.value)}
+            className={errors.openDate ? 'error-border' : ''}
+          />
+          {errors.openDate && <div className="error-message">{errors.openDate}</div>}
+        </div>
+        <div>
+          <label>Deadline:</label>
+          <input
+            type="text"
+            name="deadline"
+            placeholder="e.g., 11.11.2024 15:35"
+            value={test.deadline}
+            onChange={handleInputChange}
+            onBlur={(e) => validateField('deadline', e.target.value)}
+            className={errors.deadline ? 'error-border' : ''}
+          />
+          {errors.deadline && <div className="error-message">{errors.deadline}</div>}
+        </div>
+        <div>
+          <label>Minutes to Complete:</label>
+          <input
+            type="number"
+            name="minutesToComplete"
+            value={test.minutesToComplete}
+            onChange={handleInputChange}
+            onBlur={(e) => validateField('minutesToComplete', e.target.value)}
+            className={errors.minutesToComplete ? 'error-border' : ''}
+          />
+          {errors.minutesToComplete && (
+            <div className="error-message">{errors.minutesToComplete}</div>
+          )}
+        </div>
       </div>
-      <div>
-        <label>Open Date:</label>
-        <input
-          type="text"
-          name="openDate"
-          placeholder="e.g., 11.11.2024 12:35"
-          value={test.openDate}
-          onChange={handleInputChange}
-          onBlur={(e) => validateField('openDate', e.target.value)}
-          className={errors.openDate ? 'error-border' : ''}
+      <div className="test-creation__questions">
+        <Questions
+          instance={test}
+          collections={collections}
+          errors={errors}
+          setInstance={setTest}
+          setErrors={setErrors}
         />
-        {errors.openDate && <div className="error-message">{errors.openDate}</div>}
       </div>
-      <div>
-        <label>Deadline:</label>
-        <input
-          type="text"
-          name="deadline"
-          placeholder="e.g., 11.11.2024 15:35"
-          value={test.deadline}
-          onChange={handleInputChange}
-          onBlur={(e) => validateField('deadline', e.target.value)}
-          className={errors.deadline ? 'error-border' : ''}
-        />
-        {errors.deadline && <div className="error-message">{errors.deadline}</div>}
-      </div>
-      <div>
-        <label>Minutes to Complete:</label>
-        <input
-          type="number"
-          name="minutesToComplete"
-          value={test.minutesToComplete}
-          onChange={handleInputChange}
-          onBlur={(e) => validateField('minutesToComplete', e.target.value)}
-          className={errors.minutesToComplete ? 'error-border' : ''}
-        />
-        {errors.minutesToComplete && (
-          <div className="error-message">{errors.minutesToComplete}</div>
-        )}
-      </div>
-      <Questions
-        instance={test}
-        collections={collections}
-        errors={errors}
-        setInstance={setTest}
-        setErrors={setErrors}
-      />
-      <div className="collections-container">
+      <div className="test-creation__questions">
         {test.samples.map((sample, sIndex) => (
           <div className="collection" key={sIndex}>
-            <div className="collection-form">
-              <div>
+            <div className="question-form">
+              <div className="collection__controll">
                 <label>Collection Name:</label>
                 <select
                   name="collectionName"
@@ -238,7 +244,7 @@ function TestCreation() {
                   ))}
                 </select>
               </div>
-              <div>
+              <div className="collection__controll">
                 <label>Points:</label>
                 <input
                   type="number"
@@ -252,7 +258,7 @@ function TestCreation() {
                   <div className="error-message">{errors[`collection-points-${sIndex}-0`]}</div>
                 )}
               </div>
-              <div>
+              <div className="collection__controll">
                 <label>Questions count:</label>
                 <input
                   type="number"
@@ -268,26 +274,32 @@ function TestCreation() {
                   </div>
                 )}
               </div>
+              <button className="questions-delete" onClick={() => handleDeleteCollection(sIndex)}>
+                <img src={Trash} alt="delete" />
+                Remove
+              </button>
             </div>
-            <button className="delete-button" onClick={() => handleDeleteCollection(sIndex)}>
-              Delete Collection
-            </button>
           </div>
         ))}
       </div>
       <div className="buttons-container">
-        <button onClick={handleAddQuestion}>Add Question</button>
-        <button onClick={handleAddCollection}>Add Collection</button>
-        <button onClick={handleSubmit}>Create Test</button>
+        <button onClick={handleAddQuestion}>
+          <FaPlus /> Add Question
+        </button>
+        <button onClick={handleAddCollection}>
+          <FaFolderPlus /> Add Collection
+        </button>
+        <button onClick={handleSubmit}>
+          <FaCheck /> Create Test
+        </button>
       </div>
-
       {errors.submit &&
         errors.submit.split(',').map((error, index) => (
-          <div key={index} className="error-message">
+          <div key={index} className="test-creation__questions error-message">
             {error}
           </div>
         ))}
-    </div>
+    </>
   );
 }
 
