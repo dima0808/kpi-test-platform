@@ -33,7 +33,6 @@ function Login() {
             </div>
             <input
               ref={usernameRef}
-              value="admin"
               type="text"
               placeholder="Username"
               className="login__input"

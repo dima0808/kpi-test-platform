@@ -27,7 +27,6 @@ public class TestDto {
   @Size(min = 1, max = 100, message = "Test name must be between 1 and 100 characters")
   private String name;
 
-  @FutureOrPresent(message = "Open date must be in the present or future")
   @NotNull(message = "Open date is mandatory")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
   private LocalDateTime openDate;
