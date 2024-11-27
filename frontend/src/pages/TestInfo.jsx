@@ -21,7 +21,7 @@ function TestInfo() {
   const [error, setError] = useState(null);
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false);
   const [copied, setCopied] = useState(false);
-  const testLink = `http://${CLIENT_PATH}/${id}`;
+  const testLink = `http://${CLIENT_PATH}/#/${id}`;
 
   useEffect(() => {
     const token = Cookies.get('token');
