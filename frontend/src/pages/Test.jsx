@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getTestById } from '../utils/http';
-import { serverIP } from '../utils/constraints';
+import {SERVER_IP, SERVER_PORT, WS_PROTOCOL} from '../utils/constraints';
 import { Client } from '@stomp/stompjs';
 import TestPreview from '../components/TestPreview';
 import Question from '../components/Question';
@@ -64,7 +64,7 @@ function Test() {
       .then((data) => {
         setTest(data);
         const client = new Client({
-          brokerURL: 'ws://' + serverIP + '/ws',
+          brokerURL: WS_PROTOCOL + SERVER_IP + SERVER_PORT + '/ws',
           onConnect: () => {
             console.log('WebSocket client connected');
             setIsConnected(true);

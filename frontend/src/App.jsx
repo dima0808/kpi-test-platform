@@ -22,15 +22,15 @@ function App() {
         <Route path="create-test" element={<TestCreation />} />
         <Route path="create-collection" element={<CollectionCreation />} />
         <Route path="session-details/:id" element={<SessionDetails />} />
+        <Route
+          path="*"
+          element={
+            <div>
+              <h1>NotFoundPage</h1>
+            </div>
+          }
+        />
       </Route>
-      <Route
-        path="*"
-        element={
-          <div>
-            <h1>NotFoundPage</h1>
-          </div>
-        }
-      />
     </Routes>
   );
 }

@@ -1,7 +1,7 @@
-import {serverIP} from "./constraints";
+import {HTTP_PROTOCOL, SERVER_IP, SERVER_PORT} from "./constraints";
 
 export async function login(data) {
-  const response = await fetch(`http://${serverIP}/api/v1/auth/login`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ export async function login(data) {
 }
 
 export async function getAllTests(token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -31,9 +31,9 @@ export async function getAllTests(token) {
 export async function getTestById(id, token = null) {
   let response;
   if (token === null) {
-    response = await fetch(`http://${serverIP}/api/v1/tests/${id}`);
+    response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/tests/${id}`);
   } else {
-    response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}`, {
+    response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -47,7 +47,7 @@ export async function getTestById(id, token = null) {
 }
 
 export async function getQuestionsByTestId(id, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}/questions`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}/questions`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -60,7 +60,7 @@ export async function getQuestionsByTestId(id, token) {
 }
 
 export async function getSamplesByTestId(id, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}/samples`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}/samples`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -73,7 +73,7 @@ export async function getSamplesByTestId(id, token) {
 }
 
 export async function createTest(data, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ export async function createTest(data, token) {
 }
 
 export async function getCollectionByName(name, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections/${name}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -102,7 +102,7 @@ export async function getCollectionByName(name, token) {
 }
 
 export async function getQuestionsByCollectionName(name, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}/questions`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections/${name}/questions`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -115,7 +115,7 @@ export async function getQuestionsByCollectionName(name, token) {
 }
 
 export async function createCollection(data, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -131,7 +131,7 @@ export async function createCollection(data, token) {
 }
 
 export async function addQuestionToCollection(data, name, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}/questions`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections/${name}/questions`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -148,7 +148,7 @@ export async function addQuestionToCollection(data, name, token) {
 }
 
 export async function deleteTestById(id, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ export async function deleteTestById(id, token) {
 }
 
 export async function deleteCollectionByName(name, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections/${name}`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections/${name}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -178,7 +178,7 @@ export async function deleteCollectionByName(name, token) {
 }
 
 export async function getFinishedSessionsByTestId(id, token, credentials = '') {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}/finishedSessions${credentials !== '' ? `?credentials=${credentials}` : ''}`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}/finishedSessions${credentials !== '' ? `?credentials=${credentials}` : ''}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -191,7 +191,7 @@ export async function getFinishedSessionsByTestId(id, token, credentials = '') {
 }
 
 export async function getFinishedSessionsByTestIdInCsv(name, id, token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/tests/${id}/finishedSessions/csv`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/tests/${id}/finishedSessions/csv`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -210,7 +210,7 @@ export async function getFinishedSessionsByTestIdInCsv(name, id, token) {
 }
 
 export async function getAllCollections(token) {
-  const response = await fetch(`http://${serverIP}/api/v1/admin/collections`, {
+  const response = await fetch(`${HTTP_PROTOCOL}${SERVER_IP}${SERVER_PORT}/api/v1/admin/collections`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -7,7 +7,7 @@ import './scss/app.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/kpi-ficting">
     <App />
   </BrowserRouter>,
 );
